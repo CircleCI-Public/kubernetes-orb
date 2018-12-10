@@ -53,12 +53,21 @@ jobs:
 
       - run: circleci orb validate orb.yml
 
+      - persist_to_workspace:
+          root: .
+          paths:
+            - orb.yml
+
+
   publish-dev:
     executor: cli
     steps:
       - checkout
 
-      - run: circleci orb publish orb.yml sandbox/kubernetes@dev:$CIRCLE_BRANCH-$CIRCLE_SHA1 --token $CIRCLE_TOKEN
+      - attach_workspace:
+          at: workspace
+
+      - run: circleci orb publish workspace/orb.yml sandbox/kubernetes@dev:$CIRCLE_BRANCH-$CIRCLE_SHA1 --token $CIRCLE_TOKEN
 
   # promote-prod:
   #   executor: cli
