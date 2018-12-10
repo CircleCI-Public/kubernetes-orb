@@ -25,6 +25,7 @@ workflows:
       - publish-dev:
           requires:
             - validate
+          context: orb-publishing
 
       # - promote-prod:
       #     requires:
