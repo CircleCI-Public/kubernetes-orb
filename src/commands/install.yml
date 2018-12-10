@@ -1,0 +1,49 @@
+description: |
+  Installs kubectl and kops (latest releases, by default)
+  Requirements: curl, amd64 architecture
+
+parameters:
+  platform:
+    description: |
+      The platform on which to install kops and kubectl
+    type: enum
+    default: "linux"
+    enum: ["linux", "darwin"]
+  kops-version:
+    type: string
+    default: "latest"
+  kubectl-version:
+    type: string
+    default: "latest"
+
+
+steps:
+  - run:
+      name: Install kops
+      command: |
+        if [[ <<parameters.kops-version>> == "latest" ]]; then
+          # get latest kops release
+          KOPS_VERSION=$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)
+        else
+          KOPS_VERSION=<<parameters.kops-version>>
+        fi
+
+        # download kops
+        curl -LO https://github.com/kubernetes/kops/releases/download/$KOPS_VERSION/kops-<<parameters.platform>>-amd64
+        sudo chmod +x kops-<<parameters.platform>>-amd64
+        sudo mv kops-<<parameters.platform>>-amd64 /usr/local/bin/kops
+
+  - run:
+      name: Install kubectl
+      command: |
+        if [[ <<parameters.kubectl-version>> == "latest" ]]; then
+          # get latest kubectl release
+          KUBECTL_VERSION=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)
+        else
+          KUBECTL_VERSION=<<parameters.kubectl-version>>
+        fi
+
+        # download kubectl
+        curl -LO https://storage.googleapis.com/kubernetes-release/release/$KUBECTL_VERSION/bin/<<parameters.platform>>/amd64/kubectl
+        sudo chmod +x ./kubectl
+        sudo mv ./kubectl /usr/local/bin

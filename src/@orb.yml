@@ -1,0 +1,15 @@
+version: 2.1
+
+description: |
+  A collection of tools for working with Kubernetes on CircleCI
+
+# notes for dev:
+
+# existing kube-related orbs:
+
+# https://circleci.com/orbs/registry/orb/opuscapita/kubernetes
+# https://circleci.com/orbs/registry/orb/freighthub/kubernetes
+# https://circleci.com/orbs/registry/orb/wink/kubernetes
+# https://circleci.com/orbs/registry/orb/tiendanube/eks
+# https://circleci.com/orbs/registry/orb/civicteam/helm
+# https://circleci.com/orbs/registry/orb/airswap/kubectl

@@ -1,0 +1,64 @@
+version: 2.1
+
+orbs:
+  orb-tools: circleci/orb-tools@2.0.2
+
+executors:
+  cli:
+    docker:
+      - image: circleci/circleci-cli:0.1.2709
+  lint-condo:
+    docker:
+      - image: singapore/lint-condo
+
+
+workflows:
+  version: 2
+  test-and-deploy:
+    jobs:
+      - lint
+
+      - validate:
+          requires:
+            - lint
+
+      - publish-dev:
+          requires:
+            - validate
+
+      # - promote-prod:
+      #     requires:
+      #       - publish-dev
+      #     filters:
+      #       branches:
+      #         only: master
+
+jobs:
+  lint:
+    executor: lint-condo
+    steps:
+      - checkout
+      - run: yamllint .
+
+  validate:
+    executor: cli
+    steps:
+      - checkout
+
+      - orb-tools/pack:
+          source: src
+          destination: orb.yml
+
+      - run: circleci orb validate orb.yml
+
+  publish-dev:
+    executor: cli
+    steps:
+      - checkout
+
+      - run: circleci orb publish orb.yml sandbox/kubernetes@dev:$CIRCLE_BRANCH-$CIRCLE_SHA1 --token $CIRCLE_TOKEN
+
+  # promote-prod:
+  #   executor: cli
+  #   steps:
+  #     - checkout
