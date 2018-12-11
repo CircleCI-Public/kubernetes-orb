@@ -74,6 +74,8 @@ jobs:
 
       - run: |
           INTEGRATION_TAG=integration-$CIRCLE_BRANCH-${CIRCLE_SHA1:0:7}
+          touch test
+          git add .
           git commit --allow-empty -m "triggering integration tests, prod publishing for $INTEGRATION_TAG"
           git tag $INTEGRATION_TAG
           git push origin $INTEGRATION_TAG
