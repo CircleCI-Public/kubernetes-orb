@@ -3,7 +3,7 @@ version: 2.1
 orbs:
   orb-tools: circleci/orb-tools@2.0.2
   circle-compare-url: iynere/compare-url@0.1.10
-  kube-orb: sandbox/kubernates@dev:alpha
+  kube-orb: sandbox/kubernetes@dev:alpha
 
 
 executors:
