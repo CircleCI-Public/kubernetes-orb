@@ -16,7 +16,6 @@ parameters:
     type: string
     default: "latest"
 
-
 steps:
   - run:
       name: Install kops

@@ -7,8 +7,6 @@ description: |
 
 # existing kube-related orbs:
 
-# https://circleci.com/orbs/registry/orb/opuscapita/kubernetes
-# https://circleci.com/orbs/registry/orb/freighthub/kubernetes
 # https://circleci.com/orbs/registry/orb/wink/kubernetes
 # https://circleci.com/orbs/registry/orb/tiendanube/eks
 # https://circleci.com/orbs/registry/orb/civicteam/helm
