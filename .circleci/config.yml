@@ -84,6 +84,10 @@ jobs:
     executor: ci-base
     steps:
       - checkout
+      - run: |
+          if [[ ! $(echo $CIRCLE_TAG | grep integration) ]]; then
+            circleci step halt
+          fi
       - run: echo "test"
       - kube-orb/install
 
@@ -91,6 +95,10 @@ jobs:
     executor: cli
     steps:
       - checkout
+      - run: |
+          if [[ ! $(echo $CIRCLE_TAG | grep integration) ]]; then
+            circleci step halt
+          fi
       - run: echo "hello"
 
 workflows:
@@ -117,7 +125,7 @@ workflows:
       - integration-test:
           filters:
             branches:
-              ignore: /.*/
+              only: /.*/
             tags:
               only: /integration-*/
 
@@ -126,7 +134,7 @@ workflows:
             - integration-test
           filters:
             branches:
-              ignore: /.*/
+              only: /.*/
             tags:
               only: /integration-*/
           context: orb-publishing
