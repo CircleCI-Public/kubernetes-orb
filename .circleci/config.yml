@@ -3,6 +3,8 @@ version: 2.1
 orbs:
   orb-tools: circleci/orb-tools@2.0.2
   circle-compare-url: iynere/compare-url@0.1.10
+  kube-orb: circleci/kubernates@dev:$CIRCLE_BRANCH
+
 
 executors:
   cli:
@@ -47,7 +49,7 @@ jobs:
       - attach_workspace:
           at: workspace
 
-      - run: circleci orb publish workspace/orb.yml sandbox/kubernetes@dev:$CIRCLE_BRANCH-${CIRCLE_SHA1:0:7} --token $CIRCLE_TOKEN
+      - run: circleci orb publish workspace/orb.yml sandbox/kubernetes@dev:$CIRCLE_BRANCH --token $CIRCLE_TOKEN
 
   trigger-integration:
     executor: ci-base
@@ -59,11 +61,18 @@ jobs:
           git tag $INTEGRATION_TAG
           git push origin $INTEGRATION_TAG
 
-  promote-prod:
-    executor: cli
+  integration-test:
+    executor: ci-base
     steps:
       - checkout
       - run: echo "test"
+      - kube-orb/install
+
+  dev-promote-prod:
+    excecutor: cli
+    steps:
+      - checkout
+      - run: echo "hello"
 
 workflows:
   version: 2
@@ -86,7 +95,7 @@ workflows:
 
   integration-test_prod-deploy:
     jobs:
-      - integration:
+      - integration-test:
           filters:
             branches:
               ignore: /.*/
