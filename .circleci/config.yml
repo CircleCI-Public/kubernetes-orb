@@ -3,7 +3,7 @@ version: 2.1
 orbs:
   orb-tools: circleci/orb-tools@2.0.2
   circle-compare-url: iynere/compare-url@0.1.10
-  kube-orb: circleci/kubernates@dev:$CIRCLE_BRANCH
+  kube-orb: sandbox/kubernates@dev:$CIRCLE_BRANCH
 
 
 executors:
@@ -40,7 +40,6 @@ jobs:
           paths:
             - orb.yml
 
-
   publish-dev:
     executor: cli
     steps:
@@ -69,7 +68,7 @@ jobs:
       - kube-orb/install
 
   dev-promote-prod:
-    excecutor: cli
+    executor: cli
     steps:
       - checkout
       - run: echo "hello"
@@ -104,7 +103,7 @@ workflows:
 
       - dev-promote-prod:
           requires:
-            - integration
+            - integration-test
           filters:
             branches:
               only: master
