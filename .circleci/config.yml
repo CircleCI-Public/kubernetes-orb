@@ -3,7 +3,7 @@ version: 2.1
 orbs:
   orb-tools: circleci/orb-tools@2.0.2
   circle-compare-url: iynere/compare-url@0.1.10
-  kube-orb: sandbox/kubernates@dev:$CIRCLE_BRANCH
+  kube-orb: sandbox/kubernates@dev:alpha
 
 
 executors:
@@ -48,7 +48,9 @@ jobs:
       - attach_workspace:
           at: workspace
 
-      - run: circleci orb publish workspace/orb.yml sandbox/kubernetes@dev:$CIRCLE_BRANCH --token $CIRCLE_TOKEN
+      - run: |
+          circleci orb publish workspace/orb.yml sandbox/kubernetes@dev:$CIRCLE_BRANCH-${CIRCLE_SHA1:0:7} --token $CIRCLE_TOKEN
+          circleci orb publish workspace/orb.yml sandbox/kubernetes@dev:alpha --token $CIRCLE_TOKEN
 
   trigger-integration:
     executor: ci-base
