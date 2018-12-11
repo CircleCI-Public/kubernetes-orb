@@ -3,7 +3,7 @@ version: 2.1
 orbs:
   orb-tools: circleci/orb-tools@2.0.2
   circle-compare-url: iynere/compare-url@0.1.10
-  # kube-orb: sandbox/kubernates@dev:alpha
+  kube-orb: sandbox/kubernates@dev:alpha
 
 
 executors:
@@ -57,6 +57,10 @@ jobs:
     steps:
       - checkout
 
+      - add_ssh_keys:
+          fingerprints:
+            - "1b:26:fb:58:c5:a1:95:ef:13:93:11:4e:dd:42:41:2d"
+
       - run: |
           INTEGRATION_TAG=integration-$CIRCLE_BRANCH-${CIRCLE_SHA1:0:7}
           git tag $INTEGRATION_TAG
@@ -67,7 +71,7 @@ jobs:
     steps:
       - checkout
       - run: echo "test"
-      # - kube-orb/install
+      - kube-orb/install
 
   dev-promote-prod:
     executor: cli
