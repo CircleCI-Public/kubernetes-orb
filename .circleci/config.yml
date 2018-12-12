@@ -118,8 +118,9 @@ workflows:
           tag: master
           requires:
             - publish-dev
-          branches:
-            only: master
+          filters:
+            branches:
+              only: master
 
   integration-test_prod-deploy:
     jobs:
