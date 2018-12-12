@@ -49,16 +49,21 @@ jobs:
           at: workspace
 
       - run:
-          name: publish w/branch & sha
+          name: publish w/branch & sha (for transparency)
           command: circleci orb publish workspace/orb.yml sandbox/kubernetes@dev:$CIRCLE_BRANCH-${CIRCLE_SHA1:0:7} --token $CIRCLE_TOKEN
 
       - run:
-          name: publish alpha
+          name: publish alpha (for immediate integration testing)
           command: circleci orb publish workspace/orb.yml sandbox/kubernetes@dev:alpha --token $CIRCLE_TOKEN
 
 
   trigger-integration:
     executor: ci-base
+    parameters:
+      tag:
+        type: enum
+        default: "integration"
+        enum: ["integration", master]
     steps:
       - checkout
 
@@ -73,10 +78,7 @@ jobs:
             git config --global user.name "$CIRCLE_USERNAME"
 
       - run: |
-          INTEGRATION_TAG=integration-$CIRCLE_BRANCH-${CIRCLE_SHA1:0:7}
-          touch test
-          git add .
-          git commit --allow-empty -m "triggering integration tests, prod publishing for $INTEGRATION_TAG"
+          INTEGRATION_TAG=<<parameters.tag>>-$CIRCLE_BRANCH-${CIRCLE_SHA1:0:7}
           git tag $INTEGRATION_TAG
           git push origin $INTEGRATION_TAG
 
@@ -84,21 +86,12 @@ jobs:
     executor: ci-base
     steps:
       - checkout
-      - run: |
-          if [[ ! $(echo $CIRCLE_TAG | grep integration) ]]; then
-            circleci step halt
-          fi
-      - run: echo "test"
       - kube-orb/install
 
   dev-promote-prod:
     executor: cli
     steps:
       - checkout
-      - run: |
-          if [[ ! $(echo $CIRCLE_TAG | grep integration) ]]; then
-            circleci step halt
-          fi
       - run: echo "hello"
 
 workflows:
@@ -120,21 +113,37 @@ workflows:
           requires:
             - publish-dev
 
+      - trigger-integration:
+          name: trigger-integration-master
+          tag: master
+          requires:
+            - publish-dev
+          branches:
+            only: master
+
   integration-test_prod-deploy:
     jobs:
       - integration-test:
           filters:
             branches:
-              only: /.*/
+              ignore: /.*/
             tags:
-              only: /integration-*/
+              only: /integration-.*/
+
+      - integration-test:
+          name: integration-test-master
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /master-.*/
 
       - dev-promote-prod:
           requires:
-            - integration-test
+            - integration-test-master
           filters:
             branches:
-              only: /.*/
+              ignore: /.*/
             tags:
-              only: /integration-*/
+              only: /master-.*/
           context: orb-publishing
