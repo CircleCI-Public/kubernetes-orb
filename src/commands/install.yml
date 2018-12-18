@@ -29,8 +29,12 @@ steps:
 
         # download kops
         curl -LO https://github.com/kubernetes/kops/releases/download/$KOPS_VERSION/kops-<<parameters.platform>>-amd64
-        sudo chmod +x kops-<<parameters.platform>>-amd64
-        sudo mv kops-<<parameters.platform>>-amd64 /usr/local/bin/kops
+
+        sudo chmod +x kops-<<parameters.platform>>-amd64 || \
+          chmod +x kops-<<parameters.platform>>-amd64
+
+        sudo mv kops-<<parameters.platform>>-amd64 /usr/local/bin/kops || \
+          mv kops-<<parameters.platform>>-amd64 /usr/local/bin/kops
 
   - run:
       name: Install kubectl
@@ -44,5 +48,9 @@ steps:
 
         # download kubectl
         curl -LO https://storage.googleapis.com/kubernetes-release/release/$KUBECTL_VERSION/bin/<<parameters.platform>>/amd64/kubectl
-        sudo chmod +x ./kubectl
-        sudo mv ./kubectl /usr/local/bin
+
+        sudo chmod +x ./kubectl || \
+          chmod +x ./kubectl
+
+        sudo mv ./kubectl /usr/local/bin || \
+          mv ./kubectl /usr/local/bin
