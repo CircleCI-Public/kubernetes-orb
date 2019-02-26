@@ -1,0 +1,142 @@
+version: 2.1
+
+orbs:
+  orb-tools: circleci/orb-tools@8.3.0
+  kube-orb: circleci/kubernetes@dev:alpha
+
+executors:
+  ci-base:
+    docker:
+      - image: cibuilds/base
+
+  machine:
+    machine: true
+
+commands:
+  integration-tests:
+    steps:
+      - checkout
+      - kube-orb/install
+
+jobs:
+  integration-test-docker:
+    executor: ci-base
+    steps:
+      - integration-tests
+
+  integration-test-machine:
+    executor: machine
+    steps:
+      - integration-tests
+
+# yaml anchor filters
+integration-dev_filters: &integration-dev_filters
+  branches:
+    ignore: /.*/
+  tags:
+    only: /integration-.*/
+
+integration-master_filters: &integration-master_filters
+  branches:
+    ignore: /.*/
+  tags:
+    only: /master-.*/
+
+prod-deploy_requires: &prod-deploy_requires
+  [integration-test-docker-master, integration-test-machine-master]
+
+workflows:
+  lint_pack-validate_publish-dev:
+    jobs:
+      - orb-tools/lint
+
+      - orb-tools/pack:
+          requires:
+            - orb-tools/lint
+
+      - orb-tools/publish-dev:
+          orb-name: circleci/kubernetes
+          context: orb-publishing
+          requires:
+            - orb-tools/pack
+
+      - orb-tools/trigger-integration-workflow:
+          name: trigger-integration-dev
+          context: orb-publishing
+          ssh-fingerprints:   1b:26:fb:58:c5:a1:95:ef:13:93:11:4e:dd:42:41:2d
+          requires:
+            - orb-tools/publish-dev
+          filters:
+            branches:
+              ignore: master
+
+      - orb-tools/trigger-integration-workflow:
+          name: trigger-integration-master
+          context: orb-publishing
+          ssh-fingerprints:   1b:26:fb:58:c5:a1:95:ef:13:93:11:4e:dd:42:41:2d
+          tag: master
+          requires:
+            - orb-tools/publish-dev
+          filters:
+            branches:
+              only: master
+
+  integration-tests_prod-release:
+    jobs:
+      # non-master branch tests
+      - integration-test-docker:
+          name: integration-test-docker-dev
+          context: orb-publishing
+          filters: *integration-dev_filters
+
+      - integration-test-machine:
+          name: integration-test-machine-dev
+          context: orb-publishing
+          filters: *integration-dev_filters
+
+      # master-branch
+      - integration-test-docker:
+          name: integration-test-docker-master
+          context: orb-publishing
+          filters: *integration-master_filters
+
+      - integration-test-machine:
+          name: integration-test-machine-master
+          context: orb-publishing
+          filters: *integration-master_filters
+
+      # patch, minor, or major publishing
+      - orb-tools/dev-promote-prod:
+          name: dev-promote-patch
+          context: orb-publishing
+          orb-name: circleci/kubernetes
+          requires: *prod-deploy_requires
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /master-patch.*/
+
+      - orb-tools/dev-promote-prod:
+          name: dev-promote-minor
+          context: orb-publishing
+          orb-name: circleci/kubernetes
+          release: minor
+          requires: *prod-deploy_requires
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /master-minor.*/
+
+      - orb-tools/dev-promote-prod:
+          name: dev-promote-major
+          context: orb-publishing
+          orb-name: circleci/kubernetes
+          release: major
+          requires: *prod-deploy_requires
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /master-major.*/

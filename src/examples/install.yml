@@ -1,0 +1,18 @@
+description: |
+  Install kops and kubectl
+
+usage:
+  version: 2.1
+
+  orbs:
+    kube-orb: circleci/kubernetes@1.0.0
+
+  jobs:
+    build:
+      macos:
+        xcode: "9.0"
+      steps:
+        - checkout
+
+        - kube-orb/install:
+            platform: darwin
