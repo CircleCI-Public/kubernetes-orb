@@ -9,13 +9,25 @@ executors:
     docker:
       - image: cibuilds/base
 
-jobs:
-  integration-test:
-    executor: ci-base
+  machine:
+    machine: true
+
+commands:
+  integration-tests:
     steps:
       - checkout
-
       - kube-orb/install
+
+jobs:
+  integration-test-docker:
+    executor: ci-base
+    steps:
+      - integration-tests
+
+  integration-test-machine:
+    executor: machine
+    steps:
+      - integration-tests
 
 # yaml anchor filters
 integration-dev_filters: &integration-dev_filters
@@ -71,15 +83,18 @@ workflows:
 
   integration-tests_prod-release:
     jobs:
-      - integration-test:
-          name: integration-test-dev
+      # non-master branch tests
+      - integration-test-docker:
+          name: integration-test-docker-dev
           context: orb-publishing
           filters: *integration-dev_filters
 
-      - integration-test:
-          name: integration-test-master
+      - integration-test-docker:
+          name: integration-test-docker-master
           context: orb-publishing
           filters: *integration-master_filters
+
+      # master-branch
 
       # patch, minor, or major publishing
       - orb-tools/dev-promote-prod:
