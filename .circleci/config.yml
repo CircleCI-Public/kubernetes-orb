@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   orb-tools: circleci/orb-tools@8.3.0
-  kube-orb: sandbox/kubernetes@dev:alpha
+  kube-orb: circleci/kubernetes@dev:alpha
 
 
 executors:
