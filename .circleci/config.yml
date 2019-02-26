@@ -4,146 +4,115 @@ orbs:
   orb-tools: circleci/orb-tools@8.3.0
   kube-orb: circleci/kubernetes@dev:alpha
 
-
 executors:
-  cli:
-    docker:
-      - image: circleci/circleci-cli
-  lint-condo:
-    docker:
-      - image: singapore/lint-condo
   ci-base:
     docker:
       - image: cibuilds/base
 
 jobs:
-  lint:
-    executor: lint-condo
-    steps:
-      - checkout
-      - run: yamllint .
-
-  validate:
-    executor: cli
-    steps:
-      - checkout
-
-      - orb-tools/pack:
-          source: src
-          destination: orb.yml
-
-      - run: circleci orb validate orb.yml
-
-      - persist_to_workspace:
-          root: .
-          paths:
-            - orb.yml
-
-  publish-dev:
-    executor: cli
-    steps:
-      - checkout
-
-      - attach_workspace:
-          at: workspace
-
-      - run:
-          name: publish w/branch & sha (for transparency)
-          command: circleci orb publish workspace/orb.yml sandbox/kubernetes@dev:$CIRCLE_BRANCH-${CIRCLE_SHA1:0:7} --token $CIRCLE_TOKEN
-
-      - run:
-          name: publish alpha (for immediate integration testing)
-          command: circleci orb publish workspace/orb.yml sandbox/kubernetes@dev:alpha --token $CIRCLE_TOKEN
-
-
-  trigger-integration:
-    executor: ci-base
-    parameters:
-      tag:
-        type: enum
-        default: "integration"
-        enum: ["integration", master]
-    steps:
-      - checkout
-
-      - add_ssh_keys:
-          fingerprints:
-            - "1b:26:fb:58:c5:a1:95:ef:13:93:11:4e:dd:42:41:2d"
-
-      - run:
-          name: git config
-          command: |
-            git config --global user.email "$CIRCLE_USERNAME@users.noreply.github.com"
-            git config --global user.name "$CIRCLE_USERNAME"
-
-      - run: |
-          INTEGRATION_TAG=<<parameters.tag>>-$CIRCLE_BRANCH-${CIRCLE_SHA1:0:7}
-          git tag $INTEGRATION_TAG
-          git push origin $INTEGRATION_TAG
-
   integration-test:
     executor: ci-base
     steps:
       - checkout
+
       - kube-orb/install
 
-  dev-promote-prod:
-    executor: cli
-    steps:
-      - checkout
-      - run: echo "hello"
+# yaml anchor filters
+integration-dev_filters: &integration-dev_filters
+  branches:
+    ignore: /.*/
+  tags:
+    only: /integration-.*/
+
+integration-master_filters: &integration-master_filters
+  branches:
+    ignore: /.*/
+  tags:
+    only: /master-.*/
+
+prod-deploy_requires: &prod-deploy_requires
+  [integration-test-master]
 
 workflows:
-  version: 2
-  build_unit-test_dev-deploy:
+  lint_pack-validate_publish-dev:
     jobs:
-      - lint
+      - orb-tools/lint
 
-      - validate:
+      - orb-tools/pack:
           requires:
-            - lint
+            - orb-tools/lint
 
-      - publish-dev:
-          requires:
-            - validate
+      - orb-tools/publish-dev:
+          orb-name: circleci/kubernetes
           context: orb-publishing
-
-      - trigger-integration:
           requires:
-            - publish-dev
+            - orb-tools/pack
 
-      - trigger-integration:
+      - orb-tools/trigger-integration-workflow:
+          name: trigger-integration-dev
+          context: orb-publishing
+          ssh-fingerprints:   1b:26:fb:58:c5:a1:95:ef:13:93:11:4e:dd:42:41:2d
+          requires:
+            - orb-tools/publish-dev
+          filters:
+            branches:
+              ignore: master
+
+      - orb-tools/trigger-integration-workflow:
           name: trigger-integration-master
+          context: orb-publishing
+          ssh-fingerprints:   1b:26:fb:58:c5:a1:95:ef:13:93:11:4e:dd:42:41:2d
           tag: master
           requires:
-            - publish-dev
+            - orb-tools/publish-dev
           filters:
             branches:
               only: master
 
-  integration-test_prod-deploy:
+  integration-tests_prod-release:
     jobs:
       - integration-test:
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /integration-.*/
+          name: integration-test-dev
+          context: orb-publishing
+          filters: *integration-dev_filters
 
       - integration-test:
           name: integration-test-master
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /master-.*/
-
-      - dev-promote-prod:
-          requires:
-            - integration-test-master
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /master-.*/
           context: orb-publishing
+          filters: *integration-master_filters
+
+      # patch, minor, or major publishing
+      - orb-tools/dev-promote-prod:
+          name: dev-promote-patch
+          context: orb-publishing
+          orb-name: circleci/kubernetes
+          requires: *prod-deploy_requires
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /master-patch.*/
+
+      - orb-tools/dev-promote-prod:
+          name: dev-promote-minor
+          context: orb-publishing
+          orb-name: circleci/kubernetes
+          release: minor
+          requires: *prod-deploy_requires
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /master-minor.*/
+
+      - orb-tools/dev-promote-prod:
+          name: dev-promote-major
+          context: orb-publishing
+          orb-name: circleci/kubernetes
+          release: major
+          requires: *prod-deploy_requires
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /master-major.*/
