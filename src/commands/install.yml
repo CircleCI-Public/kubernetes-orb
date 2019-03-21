@@ -30,7 +30,7 @@ steps:
         curl -LO https://github.com/kubernetes/kops/releases/download/$KOPS_VERSION/kops-$PLATFORM-amd64
 
         [ -w /usr/local/bin ] && SUDO="" || SUDO=sudo
-        
+
         $SUDO chmod +x kops-$PLATFORM-amd64
 
         $SUDO mv kops-$PLATFORM-amd64 /usr/local/bin/kops
@@ -52,7 +52,7 @@ steps:
 
         # download kubectl
         curl -LO https://storage.googleapis.com/kubernetes-release/release/$KUBECTL_VERSION/bin/$PLATFORM/amd64/kubectl
-        
+
         [ -w /usr/local/bin ] && SUDO="" || SUDO=sudo
 
         $SUDO chmod +x ./kubectl
