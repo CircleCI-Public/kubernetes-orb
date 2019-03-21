@@ -14,5 +14,4 @@ usage:
       steps:
         - checkout
 
-        - kube-orb/install:
-            platform: darwin
+        - kube-orb/install
