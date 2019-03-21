@@ -21,6 +21,12 @@ commands:
     steps:
       - checkout
       - kube-orb/install
+      - run:
+          name: Test kops
+          command: kops version
+      - run:
+          name: Test kubectl
+          command: kubectl
 
 jobs:
   integration-test-docker:
