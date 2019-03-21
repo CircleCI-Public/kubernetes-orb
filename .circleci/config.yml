@@ -12,6 +12,10 @@ executors:
   machine:
     machine: true
 
+  macos:
+    macos:
+      xcode: "10.1.0"
+
 commands:
   integration-tests:
     steps:
@@ -29,6 +33,11 @@ jobs:
     steps:
       - integration-tests
 
+  integration-test-macos:
+    executor: macos
+    steps:
+      - integration-tests
+
 # yaml anchor filters
 integration-dev_filters: &integration-dev_filters
   branches:
@@ -43,7 +52,7 @@ integration-master_filters: &integration-master_filters
     only: /master-.*/
 
 prod-deploy_requires: &prod-deploy_requires
-  [integration-test-docker-master, integration-test-machine-master]
+  [integration-test-docker-master, integration-test-machine-master, integration-test-macos-master]
 
 workflows:
   lint_pack-validate_publish-dev:
@@ -94,6 +103,11 @@ workflows:
           context: orb-publishing
           filters: *integration-dev_filters
 
+      - integration-test-macos:
+          name: integration-test-macos-dev
+          context: orb-publishing
+          filters: *integration-dev_filters
+
       # master-branch
       - integration-test-docker:
           name: integration-test-docker-master
@@ -102,6 +116,11 @@ workflows:
 
       - integration-test-machine:
           name: integration-test-machine-master
+          context: orb-publishing
+          filters: *integration-master_filters
+
+      - integration-test-macos:
+          name: integration-test-macos-master
           context: orb-publishing
           filters: *integration-master_filters
 
