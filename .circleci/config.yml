@@ -60,7 +60,7 @@ jobs:
     steps:
       - integration-tests
 
-  deployment-tests:
+  integration-test-kubectl:
     executor: minikube
     steps:
       - checkout
@@ -153,6 +153,11 @@ workflows:
           context: orb-publishing
           filters: *integration-dev_filters
 
+      - integration-test-kubectl:
+          name: integration-test-kubectl-dev
+          context: orb-publishing
+          filters: *integration-dev_filters
+
       # master-branch
       - integration-test-docker:
           name: integration-test-docker-master
@@ -166,6 +171,11 @@ workflows:
 
       - integration-test-macos:
           name: integration-test-macos-master
+          context: orb-publishing
+          filters: *integration-master_filters
+
+      - integration-test-kubectl:
+          name: integration-test-kubectl-master
           context: orb-publishing
           filters: *integration-master_filters
 
