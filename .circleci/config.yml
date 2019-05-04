@@ -12,11 +12,27 @@ executors:
   machine:
     machine: true
 
+  minikube:
+    machine:
+      image: circleci/classic:201808-01
+    environment:
+      CHANGE_MINIKUBE_NONE_USER=true
+
   macos:
     macos:
       xcode: "10.1.0"
 
 commands:
+  start-minikube:
+    steps:
+      - run:
+          name: Start minikube
+          command: |
+            sudo apt-get update && sudo apt-get install curl
+            curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 \
+            && chmod +x minikube
+            sudo cp minikube /usr/local/bin && rm minikube
+            sudo -E minikube start --vm-driver=none --cpus 2 --memory 2048
   integration-tests:
     steps:
       - checkout
@@ -44,6 +60,29 @@ jobs:
     steps:
       - integration-tests
 
+  deployment-tests:
+    executor: minikube
+    steps:
+      - checkout
+      - kube-orb/install
+      - start-minikube
+      - kube-orb/create-or-update-resource:
+          resource-file-path: "tests/nginx-deployment/deployment.yaml"
+          resource-name: "deployment/nginx-deployment"
+          get-rollout-status: true
+          show-kubectl-command: true
+      - kube-orb/update-container-image:
+          resource-name: "deployment/nginx-deployment"
+          container-image-updates: "nginx=nginx:1.9.1"
+          record: true
+      - kube-orb/get-rollout-status:
+          resource-name: "deployment/nginx-deployment"
+          watch-rollout-status: true
+      - kube-orb/delete-resource:
+          resource-types: "deployments"
+          resource-names: "nginx-deployment"
+          now: true
+          wait: true
 # yaml anchor filters
 integration-dev_filters: &integration-dev_filters
   branches:
