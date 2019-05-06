@@ -12,11 +12,26 @@ executors:
   machine:
     machine: true
 
+  minikube:
+    machine:
+      image: circleci/classic:201808-01
+    environment:
+      CHANGE_MINIKUBE_NONE_USER=true
+
   macos:
     macos:
       xcode: "10.1.0"
 
 commands:
+  start-minikube:
+    steps:
+      - run:
+          name: Start minikube
+          command: |
+            curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 \
+              && chmod +x minikube
+            sudo cp minikube /usr/local/bin && rm minikube
+            sudo -E minikube start --vm-driver=none --cpus 2 --memory 2048
   integration-tests:
     steps:
       - checkout
@@ -44,6 +59,29 @@ jobs:
     steps:
       - integration-tests
 
+  integration-test-kubectl:
+    executor: minikube
+    steps:
+      - checkout
+      - kube-orb/install
+      - start-minikube
+      - kube-orb/create-or-update-resource:
+          resource-file-path: "tests/nginx-deployment/deployment.yaml"
+          resource-name: "deployment/nginx-deployment"
+          get-rollout-status: true
+          show-kubectl-command: true
+      - kube-orb/update-container-image:
+          resource-name: "deployment/nginx-deployment"
+          container-image-updates: "nginx=nginx:1.9.1"
+          record: true
+      - kube-orb/get-rollout-status:
+          resource-name: "deployment/nginx-deployment"
+          watch-rollout-status: true
+      - kube-orb/delete-resource:
+          resource-types: "deployments"
+          resource-names: "nginx-deployment"
+          now: true
+          wait: true
 # yaml anchor filters
 integration-dev_filters: &integration-dev_filters
   branches:
@@ -114,6 +152,11 @@ workflows:
           context: orb-publishing
           filters: *integration-dev_filters
 
+      - integration-test-kubectl:
+          name: integration-test-kubectl-dev
+          context: orb-publishing
+          filters: *integration-dev_filters
+
       # master-branch
       - integration-test-docker:
           name: integration-test-docker-master
@@ -127,6 +170,11 @@ workflows:
 
       - integration-test-macos:
           name: integration-test-macos-master
+          context: orb-publishing
+          filters: *integration-master_filters
+
+      - integration-test-kubectl:
+          name: integration-test-kubectl-master
           context: orb-publishing
           filters: *integration-master_filters
 

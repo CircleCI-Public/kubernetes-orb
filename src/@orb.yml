@@ -8,5 +8,5 @@ description: |
 # existing kube-related orbs:
 
 # https://circleci.com/orbs/registry/orb/tiendanube/eks
-# https://circleci.com/orbs/registry/orb/civicteam/helm
+# https://circleci.com/orbs/registry/orb/circleci/helm
 # https://circleci.com/orbs/registry/orb/airswap/kubectl
