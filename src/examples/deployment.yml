@@ -15,7 +15,7 @@ usage:
         CHANGE_MINIKUBE_NONE_USER=true
       steps:
         - checkout
-        - kube-orb/install
+        - kube-orb/install-kubectl
         - run:
             name: Start minikube
             command: |
