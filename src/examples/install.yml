@@ -14,4 +14,4 @@ usage:
       steps:
         - checkout
 
-        - kube-orb/install
+        - kube-orb/install-kubectl
