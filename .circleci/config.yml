@@ -42,6 +42,12 @@ commands:
       - run:
           name: Test kubectl
           command: kubectl
+      - kube-orb/install-kubeconfig:
+          kubeconfig: dGVzdA==
+      - run:
+          name: Test kubeconfig output
+          command: |
+            [[ -f $HOME/.kube/config && ! -z $HOME/.kube/config && $(<$HOME/.kube/config) == "test" ]]
 
 jobs:
   integration-test-docker:
