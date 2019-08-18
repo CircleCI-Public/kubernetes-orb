@@ -35,7 +35,7 @@ commands:
   integration-tests:
     steps:
       - checkout
-      - kube-orb/install
+      - kube-orb/install-kops
       - run:
           name: Test kops
           command: kops version
@@ -63,7 +63,7 @@ jobs:
     executor: minikube
     steps:
       - checkout
-      - kube-orb/install
+      - kube-orb/install-kubectl
       - start-minikube
       - kube-orb/create-or-update-resource:
           resource-file-path: "tests/nginx-deployment/deployment.yaml"
