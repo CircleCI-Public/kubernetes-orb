@@ -14,7 +14,7 @@ executors:
 
   minikube:
     machine:
-      image: circleci/classic:201808-01
+      image: ubuntu-1604:201903-01
     environment:
       CHANGE_MINIKUBE_NONE_USER=true
 
@@ -72,7 +72,7 @@ jobs:
           show-kubectl-command: true
       - kube-orb/update-container-image:
           resource-name: "deployment/nginx-deployment"
-          container-image-updates: "nginx=nginx:1.9.1"
+          container-image-updates: "nginx=nginx:1.9.1 redis=redis:5-buster"
           record: true
       - kube-orb/get-rollout-status:
           resource-name: "deployment/nginx-deployment"
