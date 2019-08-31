@@ -1,0 +1,20 @@
+description: |
+  Installs kubectl and kops (latest releases, by default)
+  Requirements: curl, amd64 architecture
+
+parameters:
+  kops-version:
+    type: string
+    default: "latest"
+  kubectl-version:
+    type: string
+    default: "latest"
+
+steps:
+  - run:
+      name: Install kops
+      command: install-kops
+
+  - run:
+      name: Install kubectl
+      command: install-kubectl
