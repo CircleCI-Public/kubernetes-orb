@@ -13,5 +13,4 @@ usage:
         xcode: "9.0"
       steps:
         - checkout
-
-        - kube-orb/install-kubectl
+        - kube-orb/install

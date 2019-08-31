@@ -35,7 +35,7 @@ commands:
   integration-tests:
     steps:
       - checkout
-      - kube-orb/install-kops
+      - kube-orb/install
       - run:
           name: Test kops
           command: kops version
