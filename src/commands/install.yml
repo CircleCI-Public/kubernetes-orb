@@ -11,10 +11,5 @@ parameters:
     default: "latest"
 
 steps:
-  - run:
-      name: Install kops
-      command: install-kops
-
-  - run:
-      name: Install kubectl
-      command: install-kubectl
+  - install-kops
+  - install-kubectl
