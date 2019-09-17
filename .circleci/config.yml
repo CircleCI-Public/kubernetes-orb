@@ -43,7 +43,7 @@ commands:
           name: Test kubectl
           command: kubectl
       - kube-orb/install-kubeconfig:
-          kubeconfig: dGVzdA==
+          kubeconfig: KUBECONFIG
       - run:
           name: Test kubeconfig output
           command: |
