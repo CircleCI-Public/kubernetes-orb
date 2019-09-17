@@ -11,5 +11,7 @@ parameters:
     default: "latest"
 
 steps:
-  - install-kops
-  - install-kubectl
+  - install-kops:
+      kops-version: << parameters.kops-version >>
+  - install-kubectl:
+      kubectl-version: << parameters.kubectl-version >>
