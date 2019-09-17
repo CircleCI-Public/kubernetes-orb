@@ -113,7 +113,7 @@ integration-master_filters: &integration-master_filters
     only: /master-.*/
 
 prod-deploy_requires: &prod-deploy_requires
-  [integration-test-docker-master, integration-test-machine-master, integration-test-macos-master]
+    [integration-test-docker-master, integration-test-machine-master, integration-test-macos-master, integration-test-kubectl-master]
 
 workflows:
   lint_pack-validate_publish-dev:
