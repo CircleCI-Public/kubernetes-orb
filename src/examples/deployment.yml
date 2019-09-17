@@ -5,7 +5,7 @@ usage:
   version: 2.1
 
   orbs:
-    kube-orb: circleci/kubernetes@1.0.0
+    kube-orb: circleci/kubernetes@x.y.z
 
   jobs:
     build:
@@ -15,7 +15,7 @@ usage:
         CHANGE_MINIKUBE_NONE_USER=true
       steps:
         - checkout
-        - kube-orb/install
+        - kube-orb/install-kubectl
         - run:
             name: Start minikube
             command: |

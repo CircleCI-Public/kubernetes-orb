@@ -14,7 +14,7 @@ executors:
 
   minikube:
     machine:
-      image: circleci/classic:201808-01
+      image: ubuntu-1604:201903-01
     environment:
       CHANGE_MINIKUBE_NONE_USER=true
 
@@ -48,6 +48,23 @@ commands:
           name: Test kubeconfig output
           command: |
             [[ -f $HOME/.kube/config && ! -z $HOME/.kube/config && $(<$HOME/.kube/config) == "test" ]]
+  integration-tests-specific-version:
+    steps:
+      - checkout
+      - kube-orb/install:
+          kubectl-version: v1.15.2
+          kops-version: 1.12.2
+      - run:
+          name: Test kops version
+          command: kops version | grep "1.12.2"
+      - run:
+          name: Test kubectl version
+          command: |
+            set +e
+            # ignore connection refused error
+            KUBECTL_VERSION=$(kubectl version)
+            set -e
+            echo $KUBECTL_VERSION | grep "v1.15.2"
 
 jobs:
   integration-test-docker:
@@ -58,7 +75,7 @@ jobs:
   integration-test-machine:
     executor: machine
     steps:
-      - integration-tests
+      - integration-tests-specific-version
 
   integration-test-macos:
     executor: macos
@@ -69,7 +86,7 @@ jobs:
     executor: minikube
     steps:
       - checkout
-      - kube-orb/install
+      - kube-orb/install-kubectl
       - start-minikube
       - kube-orb/create-or-update-resource:
           resource-file-path: "tests/nginx-deployment/deployment.yaml"
@@ -78,7 +95,7 @@ jobs:
           show-kubectl-command: true
       - kube-orb/update-container-image:
           resource-name: "deployment/nginx-deployment"
-          container-image-updates: "nginx=nginx:1.9.1"
+          container-image-updates: "nginx=nginx:1.9.1 redis=redis:5-buster"
           record: true
       - kube-orb/get-rollout-status:
           resource-name: "deployment/nginx-deployment"
@@ -102,7 +119,7 @@ integration-master_filters: &integration-master_filters
     only: /master-.*/
 
 prod-deploy_requires: &prod-deploy_requires
-  [integration-test-docker-master, integration-test-machine-master, integration-test-macos-master]
+  [integration-test-docker-master, integration-test-machine-master, integration-test-macos-master, integration-test-kubectl-master]
 
 workflows:
   lint_pack-validate_publish-dev:

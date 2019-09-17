@@ -1,0 +1,33 @@
+description: |
+  Installs kubectl (latest release, by default)
+  Requirements: curl, amd64 architecture
+
+parameters:
+  kubectl-version:
+    type: string
+    default: "latest"
+
+steps:
+  - run:
+      name: Install kubectl
+      command: |
+        if [[ <<parameters.kubectl-version>> == "latest" ]]; then
+          # get latest kubectl release
+          KUBECTL_VERSION=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)
+        else
+          KUBECTL_VERSION=<<parameters.kubectl-version>>
+        fi
+
+        PLATFORM="linux"
+        if [ -n "$(uname | grep "Darwin")" ]; then
+          PLATFORM="darwin"
+        fi
+
+        # download kubectl
+        curl -LO https://storage.googleapis.com/kubernetes-release/release/$KUBECTL_VERSION/bin/$PLATFORM/amd64/kubectl
+
+        [ -w /usr/local/bin ] && SUDO="" || SUDO=sudo
+
+        $SUDO chmod +x ./kubectl
+
+        $SUDO mv ./kubectl /usr/local/bin

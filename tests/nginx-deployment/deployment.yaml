@@ -17,3 +17,8 @@ spec:
         image: nginx:1.7.9
         ports:
         - containerPort: 80
+      # For multi-image update testing purposes
+      - name: redis
+        image: redis:latest
+        ports:
+        - containerPort: 6379
