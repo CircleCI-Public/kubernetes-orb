@@ -42,6 +42,23 @@ commands:
       - run:
           name: Test kubectl
           command: kubectl
+  integration-tests-specific-version:
+    steps:
+      - checkout
+      - kube-orb/install:
+          kubectl-version: v1.15.2
+          kops-version: 1.12.2
+      - run:
+          name: Test kops version
+          command: kops version | grep "1.12.2"
+      - run:
+          name: Test kubectl version
+          command: |
+            set +e
+            # ignore connection refused error
+            KUBECTL_VERSION=$(kubectl version)
+            set -e
+            echo $KUBECTL_VERSION | grep "v1.15.2"
 
 jobs:
   integration-test-docker:
@@ -52,7 +69,7 @@ jobs:
   integration-test-machine:
     executor: machine
     steps:
-      - integration-tests
+      - integration-tests-specific-version
 
   integration-test-macos:
     executor: macos

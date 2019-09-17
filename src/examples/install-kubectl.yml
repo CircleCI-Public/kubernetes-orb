@@ -1,5 +1,5 @@
 description: |
-  Install kops and kubectl
+  Install kubectl
 
 usage:
   version: 2.1
@@ -13,4 +13,4 @@ usage:
         xcode: "9.0"
       steps:
         - checkout
-        - kube-orb/install
+        - kube-orb/install-kubectl
