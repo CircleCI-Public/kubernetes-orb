@@ -7,7 +7,7 @@ orbs:
 executors:
   ci-base:
     docker:
-      - image: cibuilds/base
+      - image: cimg/base
 
   machine:
     machine: true
@@ -42,6 +42,12 @@ commands:
       - run:
           name: Test kubectl
           command: kubectl
+      - kube-orb/install-kubeconfig:
+          kubeconfig: KUBECONFIG
+      - run:
+          name: Test kubeconfig output
+          command: |
+            [[ -f $HOME/.kube/config && ! -z $HOME/.kube/config && $(<$HOME/.kube/config) == "test" ]]
   integration-tests-specific-version:
     steps:
       - checkout
