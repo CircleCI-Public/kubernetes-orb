@@ -7,7 +7,7 @@ orbs:
 executors:
   ci-base:
     docker:
-      - image: cibuilds/base
+      - image: cimg/base
 
   machine:
     machine: true
