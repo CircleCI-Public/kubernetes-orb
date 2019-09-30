@@ -1,7 +1,8 @@
 version: 2.1
 
 description: |
-  A collection of tools for working with Kubernetes on CircleCI
+  A collection of tools for working with Kubernetes on CircleCI  
+  Repo Link: https://circleci.com/orbs/registry/orb/circleci/kubernetes
 
 # notes for dev:
 
