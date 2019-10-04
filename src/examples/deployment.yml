@@ -16,13 +16,6 @@ usage:
       steps:
         - checkout
         - kube-orb/install-kubectl
-        - run:
-            name: Start minikube
-            command: |
-              curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 \
-                && chmod +x minikube
-              sudo cp minikube /usr/local/bin && rm minikube
-              sudo -E minikube start --vm-driver=none --cpus 2 --memory 2048
         - kube-orb/create-or-update-resource:
             resource-file-path: "tests/nginx-deployment/deployment.yaml"
             resource-name: "deployment/nginx-deployment"
@@ -33,8 +26,3 @@ usage:
             container-image-updates: "nginx=nginx:1.9.1"
             get-rollout-status: true
             record: true
-        - kube-orb/delete-resource:
-            resource-types: "deployments"
-            resource-names: "nginx-deployment"
-            now: true
-            wait: true
