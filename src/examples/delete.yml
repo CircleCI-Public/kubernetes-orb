@@ -1,0 +1,21 @@
+description: |
+  Deploying kubernetes resources.
+
+usage:
+  version: 2.1
+
+  orbs:
+    kube-orb: circleci/kubernetes@x.y.z
+
+  jobs:
+    build:
+      machine:
+        image: circleci/classic:201808-01
+      environment: CHANGE_MINIKUBE_NONE_USER=true
+      steps:
+        - kube-orb/install-kubectl
+        - kube-orb/delete-resource:
+            resource-types: "deployments"
+            resource-names: "nginx-deployment"
+            now: true
+            wait: true
