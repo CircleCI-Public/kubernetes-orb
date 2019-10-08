@@ -58,5 +58,4 @@ steps:
             resource-name: << parameters.resource-name >>
             namespace: << parameters.namespace >>
             watch-rollout-status: << parameters.watch-rollout-status >>
-            pinned-revision-to-watch: ""
             watch-timeout: << parameters.watch-timeout >>
