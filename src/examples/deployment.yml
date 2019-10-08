@@ -34,8 +34,8 @@ usage:
             get-rollout-status: true
             record: true
         - kube-orb/rollback:
-          resource-name: "deployment/nginx-deployment"
-          get-rollout-status: true
+            resource-name: "deployment/nginx-deployment"
+            get-rollout-status: true
         - kube-orb/delete-resource:
             resource-types: "deployments"
             resource-names: "nginx-deployment"
