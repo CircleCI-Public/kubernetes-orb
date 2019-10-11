@@ -83,7 +83,7 @@ steps:
         if [ -n "${RESOURCE_FILE_PATH}" ]; then
           if [ "${KUSTOMIZE}" == "true" ]; then
             set -- "$@" -k
-          else    
+          else
             set -- "$@" -f
           fi
           set -- "$@" "${RESOURCE_FILE_PATH}"
