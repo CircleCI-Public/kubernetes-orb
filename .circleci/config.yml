@@ -106,6 +106,9 @@ jobs:
       - kube-orb/get-rollout-status:
           resource-name: "deployment/nginx-deployment"
           watch-rollout-status: true
+      - kube-orb/rollback:
+          resource-name: "deployment/nginx-deployment"
+          get-rollout-status: true
       - kube-orb/delete-resource:
           resource-types: "deployments"
           resource-names: "nginx-deployment"
