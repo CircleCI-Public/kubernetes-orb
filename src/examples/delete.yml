@@ -1,5 +1,5 @@
 description: |
-  Deploying kubernetes resources.
+  Delete kubernetes resource.
 
 usage:
   version: 2.1
