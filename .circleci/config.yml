@@ -7,7 +7,7 @@ orbs:
 executors:
   ci-base:
     docker:
-      - image: cimg/base
+      - image: cimg/base:stable
 
   machine:
     machine: true
@@ -69,6 +69,9 @@ commands:
 jobs:
   integration-test-docker:
     executor: ci-base
+    environment:
+      # For testing the install-kubeconfig command
+      KUBECONFIG: dGVzdA==
     steps:
       - integration-tests
 
@@ -79,6 +82,9 @@ jobs:
 
   integration-test-macos:
     executor: macos
+    environment:
+      # For testing the install-kubeconfig command
+      KUBECONFIG: dGVzdA==
     steps:
       - integration-tests
 
