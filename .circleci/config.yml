@@ -114,6 +114,12 @@ jobs:
           resource-names: "nginx-deployment"
           now: true
           wait: true
+      - kube-orb/create-or-update-resource:
+          resource-file-path: "tests/kustomize/overlays/staging"
+          resource-name: "deployment/staging-hello"
+          kustomize: true
+          get-rollout-status: true
+          show-kubectl-command: true
 # yaml anchor filters
 integration-dev_filters: &integration-dev_filters
   branches:
