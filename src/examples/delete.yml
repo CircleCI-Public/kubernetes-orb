@@ -8,10 +8,9 @@ usage:
     kube-orb: circleci/kubernetes@x.y.z
 
   jobs:
-    build:
-      machine:
-        image: circleci/classic:201808-01
-      environment: CHANGE_MINIKUBE_NONE_USER=true
+    delete:
+      docker:
+        - image: cimg/base:stable
       steps:
         - kube-orb/install-kubectl
         - kube-orb/delete-resource:
