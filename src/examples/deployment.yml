@@ -8,11 +8,9 @@ usage:
     kube-orb: circleci/kubernetes@x.y.z
 
   jobs:
-    build:
-      machine:
-        image: circleci/classic:201808-01
-      environment:
-        CHANGE_MINIKUBE_NONE_USER=true
+    create-update:
+      docker:
+        - image: cimg/base:stable
       steps:
         - checkout
         - kube-orb/install-kubectl
