@@ -1,0 +1,21 @@
+description: |
+  Update kubernetes resources.
+
+usage:
+  version: 2.1
+
+  orbs:
+    kube-orb: circleci/kubernetes@x.y.z
+
+  jobs:
+    update:
+      docker:
+        - image: cimg/base:stable
+      steps:
+        - checkout
+        - kube-orb/install-kubectl
+        - kube-orb/update-container-image:
+            resource-name: "deployment/nginx-deployment"
+            container-image-updates: "nginx=nginx:1.9.1"
+            get-rollout-status: true
+            record: true
