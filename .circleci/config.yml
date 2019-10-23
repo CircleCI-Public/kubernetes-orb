@@ -7,7 +7,7 @@ orbs:
 executors:
   ci-base:
     docker:
-      - image: cimg/base
+      - image: cimg/base:stable
 
   machine:
     machine: true
@@ -69,6 +69,9 @@ commands:
 jobs:
   integration-test-docker:
     executor: ci-base
+    environment:
+      # For testing the install-kubeconfig command
+      KUBECONFIG: dGVzdA==
     steps:
       - integration-tests
 
@@ -79,6 +82,9 @@ jobs:
 
   integration-test-macos:
     executor: macos
+    environment:
+      # For testing the install-kubeconfig command
+      KUBECONFIG: dGVzdA==
     steps:
       - integration-tests
 
@@ -100,11 +106,20 @@ jobs:
       - kube-orb/get-rollout-status:
           resource-name: "deployment/nginx-deployment"
           watch-rollout-status: true
+      - kube-orb/rollback:
+          resource-name: "deployment/nginx-deployment"
+          get-rollout-status: true
       - kube-orb/delete-resource:
           resource-types: "deployments"
           resource-names: "nginx-deployment"
           now: true
           wait: true
+      - kube-orb/create-or-update-resource:
+          resource-file-path: "tests/kustomize/overlays/staging"
+          resource-name: "deployment/staging-hello"
+          kustomize: true
+          get-rollout-status: true
+          show-kubectl-command: true
 # yaml anchor filters
 integration-dev_filters: &integration-dev_filters
   branches:
