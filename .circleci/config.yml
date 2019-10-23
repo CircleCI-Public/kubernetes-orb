@@ -122,11 +122,11 @@ jobs:
           show-kubectl-command: true
 
   integration-test-example-deployment:
-    docker:
-      - image: cimg/base:stable
+    executor: minikube
     steps:
       - checkout
       - kube-orb/install-kubectl
+      - start-minikube
       - kube-orb/create-or-update-resource:
           resource-file-path: "tests/nginx-deployment/deployment.yaml"
           resource-name: "deployment/nginx-deployment"
@@ -134,11 +134,11 @@ jobs:
           show-kubectl-command: true
 
   integration-test-example-update:
-    docker:
-      - image: cimg/base:stable
+    executor: minikube
     steps:
       - checkout
       - kube-orb/install-kubectl
+      - start-minikube
       - kube-orb/update-container-image:
           resource-name: "deployment/nginx-deployment"
           container-image-updates: "nginx=nginx:1.9.1"
@@ -146,10 +146,10 @@ jobs:
           record: true
 
   integration-test-example-delete:
-    docker:
-      - image: cimg/base:stable
+    executor: minikube
     steps:
       - kube-orb/install-kubectl
+      - start-minikube
       - kube-orb/delete-resource:
           resource-types: "deployments"
           resource-names: "nginx-deployment"
