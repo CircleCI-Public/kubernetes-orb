@@ -229,12 +229,12 @@ workflows:
           name: integration-test-kubectl-dev
           context: orb-publishing
           filters: *integration-dev_filters
-      
+
       - integration-test-example-deployment:
           name: integration-test-example-deployment-dev
           context: orb-publishing
           filters: *integration-dev_filters
-      
+
       - integration-test-example-update:
           name: integration-test-example-deployment-update
           pre-steps:
