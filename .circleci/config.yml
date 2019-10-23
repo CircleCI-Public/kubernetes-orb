@@ -138,7 +138,6 @@ jobs:
     steps:
       - checkout
       - kube-orb/install-kubectl
-      - start-minikube
       - kube-orb/update-container-image:
           resource-name: "deployment/nginx-deployment"
           container-image-updates: "nginx=nginx:1.9.1"
@@ -149,7 +148,6 @@ jobs:
     executor: minikube
     steps:
       - kube-orb/install-kubectl
-      - start-minikube
       - kube-orb/delete-resource:
           resource-types: "deployments"
           resource-names: "nginx-deployment"
@@ -240,6 +238,7 @@ workflows:
           pre-steps:
             - checkout
             - kube-orb/install-kubectl
+            - start-minikube
             - kube-orb/create-or-update-resource:
                 resource-file-path: "tests/nginx-deployment/deployment.yaml"
                 resource-name: "deployment/nginx-deployment"
@@ -253,6 +252,7 @@ workflows:
           pre-steps:
             - checkout
             - kube-orb/install-kubectl
+            - start-minikube
             - kube-orb/create-or-update-resource:
                 resource-file-path: "tests/nginx-deployment/deployment.yaml"
                 resource-name: "deployment/nginx-deployment"
