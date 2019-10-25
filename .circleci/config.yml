@@ -120,6 +120,11 @@ jobs:
           kustomize: true
           get-rollout-status: true
           show-kubectl-command: true
+      - kube-orb/delete-resource:
+          resource-file-path: "tests/kustomize/overlays/staging"
+          kustomize: true
+          now: true
+          wait: true
 # yaml anchor filters
 integration-dev_filters: &integration-dev_filters
   branches:
