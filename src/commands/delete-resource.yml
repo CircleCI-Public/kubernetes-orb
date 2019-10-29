@@ -91,6 +91,11 @@ parameters:
       Whether the kubectl command will be executed in dry-run mode.
     type: boolean
     default: false
+  kustomize:
+    description: |
+      Enable it to run the kubectl command with the option -k for kustomize.
+    type: boolean
+    default: false
   show-kubectl-command:
     description: |
       Whether to show the kubectl command used.
@@ -114,8 +119,13 @@ steps:
         WAIT="<< parameters.wait >>"
         NAMESPACE="<< parameters.namespace >>"
         DRY_RUN="<< parameters.dry-run >>"
+        KUSTOMIZE="<< parameters.kustomize >>"
         if [ -n "${RESOURCE_FILE_PATH}" ]; then
-          set -- "$@" -f
+          if [ "${KUSTOMIZE}" == "true" ]; then
+            set -- "$@" -k
+          else
+            set -- "$@" -f
+          fi
           set -- "$@" "${RESOURCE_FILE_PATH}"
         elif [ -n "${RESOURCE_TYPES}" ]; then
           set -- "$@" "${RESOURCE_TYPES}"
