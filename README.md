@@ -2,6 +2,10 @@
 
 Tools for working with Kubernetes on CircleCI. The orb currently supports installing the `kubectl` and `kops` CLI tools and using `kubectl` for resource deployments. Separate orbs for working with Google Kubernetes Engine and other cloud providers' Kubernetes solutions also exist.
 
+## Deploy and manage Kubernetes services and environments with these orbs:
+
+[Google Kubernetes Engine](https://circleci.com/orbs/registry/orb/circleci/gcp-gke) now Deploy a Kubernetes cluster and update production code in seconds from your CI pipeline Amazon Elastic Container Services (EKS) Deploy, manage, and scale containerized applications using Kubernetes on AWS Azure Kubernetes Service Ship faster, operate with ease, and scale confidently with Azure Kubernetes Service Red Hat OpenShift Automate the build, deployment, and management of Kubernetes applications VMware Code Stream Release higher quality applications and IT code faster while reducing operational risk DeployHub Automate the release steps of your workflow, creating a 100% repeatable deployment process for every state in your pipeline.
+
 ## Usage
 
 See the [orb registry listing](http://circleci.com/orbs/registry/orb/circleci/kubernetes) for usage guidelines.
