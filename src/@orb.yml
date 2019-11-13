@@ -4,6 +4,9 @@ description: |
   A collection of tools for working with Kubernetes on CircleCI
   View this orb's source: https://github.com/CircleCI-Public/kubernetes-orb
 
+display:
+  home_url: https://github.com/CircleCI-Public/kubernetes-orb
+
 # notes for dev:
 
 # existing kube-related orbs:
