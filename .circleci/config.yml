@@ -43,7 +43,7 @@ commands:
           name: Test kubectl
           command: kubectl
       - kube-orb/install-kubeconfig:
-          kubeconfig: KUBECONFIG
+          kubeconfig: KUBECONFIG_DATA
       - run:
           name: Test kubeconfig output
           command: |
@@ -71,7 +71,7 @@ jobs:
     executor: ci-base
     environment:
       # For testing the install-kubeconfig command
-      KUBECONFIG: dGVzdA==
+      KUBECONFIG_DATA: dGVzdA==
     steps:
       - integration-tests
 
@@ -84,7 +84,7 @@ jobs:
     executor: macos
     environment:
       # For testing the install-kubeconfig command
-      KUBECONFIG: dGVzdA==
+      KUBECONFIG_DATA: dGVzdA==
     steps:
       - integration-tests
 
