@@ -179,6 +179,8 @@ workflows:
           context: orb-publishing
           ssh-fingerprints: 1b:26:fb:58:c5:a1:95:ef:13:93:11:4e:dd:42:41:2d
           tag: master
+          use-git-diff: false
+          static-release-type: minor
           requires:
             - orb-tools/publish-dev
           filters:
