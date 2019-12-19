@@ -43,7 +43,7 @@ commands:
           name: Test kubectl
           command: kubectl
       - kube-orb/install-kubeconfig:
-          kubeconfig: KUBECONFIG
+          kubeconfig: MY_KUBECONFIG_DATA
       - run:
           name: Test kubeconfig output
           command: |
@@ -65,18 +65,26 @@ commands:
             KUBECTL_VERSION=$(kubectl version)
             set -e
             echo $KUBECTL_VERSION | grep "v1.15.2"
+      - kube-orb/install-kubeconfig
+      - run:
+          name: Test kubeconfig output
+          command: |
+            [[ -f $HOME/.kube/config && ! -z $HOME/.kube/config && $(<$HOME/.kube/config) == "test" ]]
 
 jobs:
   integration-test-docker:
     executor: ci-base
     environment:
       # For testing the install-kubeconfig command
-      KUBECONFIG: dGVzdA==
+      MY_KUBECONFIG_DATA: dGVzdA==
     steps:
       - integration-tests
 
   integration-test-machine:
     executor: machine
+    environment:
+      # For testing the install-kubeconfig command
+      KUBECONFIG_DATA: dGVzdA==
     steps:
       - integration-tests-specific-version
 
@@ -84,7 +92,7 @@ jobs:
     executor: macos
     environment:
       # For testing the install-kubeconfig command
-      KUBECONFIG: dGVzdA==
+      MY_KUBECONFIG_DATA: dGVzdA==
     steps:
       - integration-tests
 
@@ -171,6 +179,8 @@ workflows:
           context: orb-publishing
           ssh-fingerprints: 1b:26:fb:58:c5:a1:95:ef:13:93:11:4e:dd:42:41:2d
           tag: master
+          use-git-diff: false
+          static-release-type: minor
           requires:
             - orb-tools/publish-dev
           filters:
