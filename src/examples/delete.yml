@@ -5,15 +5,15 @@ usage:
   version: 2.1
 
   orbs:
-    kube-orb: circleci/kubernetes@x.y.z
+    kubernetes: circleci/kubernetes@x.y.z
 
   jobs:
     delete:
       docker:
         - image: cimg/base:stable
       steps:
-        - kube-orb/install-kubectl
-        - kube-orb/delete-resource:
+        - kubernetes/install-kubectl
+        - kubernetes/delete-resource:
             resource-types: "deployments"
             resource-names: "nginx-deployment"
             now: true
