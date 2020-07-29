@@ -30,6 +30,12 @@ parameters:
       Any other values should contain a corresponding time unit (e.g. 1s, 2m, 3h).
     type: string
     default: ""
+  step-timeout:
+    description: |
+      The length of time to set no_output_timeout on the step,
+      this may be necessary if the rollout status takes longer than the default 10m
+    type: string
+    default: "10m"
   show-kubectl-command:
     description: |
       Whether to show the kubectl command used.
@@ -59,3 +65,4 @@ steps:
             namespace: << parameters.namespace >>
             watch-rollout-status: << parameters.watch-rollout-status >>
             watch-timeout: << parameters.watch-timeout >>
+            step-timeout: << parameters.step-timeout >>
