@@ -40,7 +40,7 @@ parameters:
 steps:
   - run:
       name: Show the resource rollout status
-      no_output_time: <<parameters.watch-timeout>>
+      no_output_timeout: <<parameters.watch-timeout>>
       command: |
         RESOURCE_NAME="<< parameters.resource-name >>"
         NAMESPACE="<< parameters.namespace >>"
