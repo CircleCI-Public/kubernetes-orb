@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   orb-tools: circleci/orb-tools@9.2.1
-  kube-orb: circleci/kubernetes@dev:alpha
+  kubernetes: circleci/kubernetes@dev:alpha
 
 # Pipeline parameters
 parameters:
