@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   orb-tools: circleci/orb-tools@9.2.1
-  kube-orb: circleci/kubernetes@dev:alpha
+  kubernetes: circleci/kubernetes@dev:alpha
 
 # Pipeline parameters
 parameters:
@@ -48,14 +48,14 @@ commands:
   integration-tests:
     steps:
       - checkout
-      - kube-orb/install
+      - kubernetes/install
       - run:
           name: Test kops
           command: kops version
       - run:
           name: Test kubectl
           command: kubectl
-      - kube-orb/install-kubeconfig:
+      - kubernetes/install-kubeconfig:
           kubeconfig: MY_KUBECONFIG_DATA
       - run:
           name: Test kubeconfig output
@@ -64,7 +64,7 @@ commands:
   integration-tests-specific-version:
     steps:
       - checkout
-      - kube-orb/install:
+      - kubernetes/install:
           kubectl-version: v1.15.2
           kops-version: 1.12.2
       - run:
@@ -78,7 +78,7 @@ commands:
             KUBECTL_VERSION=$(kubectl version)
             set -e
             echo $KUBECTL_VERSION | grep "v1.15.2"
-      - kube-orb/install-kubeconfig
+      - kubernetes/install-kubeconfig
       - run:
           name: Test kubeconfig output
           command: |
@@ -113,35 +113,35 @@ jobs:
     executor: minikube
     steps:
       - checkout
-      - kube-orb/install-kubectl
+      - kubernetes/install-kubectl
       - start-minikube
-      - kube-orb/create-or-update-resource:
+      - kubernetes/create-or-update-resource:
           resource-file-path: "tests/nginx-deployment/deployment.yaml"
           resource-name: "deployment/nginx-deployment"
           get-rollout-status: true
           show-kubectl-command: true
-      - kube-orb/update-container-image:
+      - kubernetes/update-container-image:
           resource-name: "deployment/nginx-deployment"
           container-image-updates: "nginx=nginx:1.9.1 redis=redis:5-buster"
           record: true
-      - kube-orb/get-rollout-status:
+      - kubernetes/get-rollout-status:
           resource-name: "deployment/nginx-deployment"
           watch-rollout-status: true
-      - kube-orb/rollback:
+      - kubernetes/rollback:
           resource-name: "deployment/nginx-deployment"
           get-rollout-status: true
-      - kube-orb/delete-resource:
+      - kubernetes/delete-resource:
           resource-types: "deployments"
           resource-names: "nginx-deployment"
           now: true
           wait: true
-      - kube-orb/create-or-update-resource:
+      - kubernetes/create-or-update-resource:
           resource-file-path: "tests/kustomize/overlays/staging"
           resource-name: "deployment/staging-hello"
           kustomize: true
           get-rollout-status: true
           show-kubectl-command: true
-      - kube-orb/delete-resource:
+      - kubernetes/delete-resource:
           resource-file-path: "tests/kustomize/overlays/staging"
           kustomize: true
           now: true

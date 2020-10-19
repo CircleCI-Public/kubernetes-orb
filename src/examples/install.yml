@@ -5,7 +5,7 @@ usage:
   version: 2.1
 
   orbs:
-    kube-orb: circleci/kubernetes@x.y.z
+    kubernetes: circleci/kubernetes@x.y.z
 
   jobs:
     build:
@@ -13,4 +13,4 @@ usage:
         xcode: "9.0"
       steps:
         - checkout
-        - kube-orb/install
+        - kubernetes/install
