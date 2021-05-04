@@ -67,6 +67,12 @@ parameters:
       Whether to show the kubectl command used.
     type: boolean
     default: false
+  server-side-apply:
+    description: |
+      Whether to run apply in the server instead of the client.
+      Only effective if action-type is set to `apply`.
+    type: boolean
+    default: false
 
 steps:
   - run:
@@ -77,8 +83,13 @@ steps:
         NAMESPACE="<< parameters.namespace >>"
         DRY_RUN="<< parameters.dry-run >>"
         KUSTOMIZE="<< parameters.kustomize >>"
+        SERVER_SIDE_APPLY="<< parameters.server-side-apply >>"
         if [ -n "${ACTION_TYPE}" ]; then
           set -- "$@" "${ACTION_TYPE}"
+
+          if [ "${ACTION_TYPE}" == "apply" ] && [ "${SERVER_SIDE_APPLY}" == "true"]; then
+            set -- "$@" --server-side
+          fi
         fi
         if [ -n "${RESOURCE_FILE_PATH}" ]; then
           if [ "${KUSTOMIZE}" == "true" ]; then
