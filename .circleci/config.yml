@@ -120,6 +120,7 @@ jobs:
           resource-name: "deployment/nginx-deployment"
           get-rollout-status: true
           show-kubectl-command: true
+          server-side-apply: true
       - kubernetes/update-container-image:
           resource-name: "deployment/nginx-deployment"
           container-image-updates: "nginx=nginx:1.9.1 redis=redis:5-buster"
@@ -141,6 +142,7 @@ jobs:
           kustomize: true
           get-rollout-status: true
           show-kubectl-command: true
+          server-side-apply: true
       - kubernetes/delete-resource:
           resource-file-path: "tests/kustomize/overlays/staging"
           kustomize: true
