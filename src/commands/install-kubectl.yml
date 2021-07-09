@@ -24,7 +24,7 @@ steps:
         fi
 
         # download kubectl
-        curl -LO https://storage.googleapis.com/kubernetes-release/release/$KUBECTL_VERSION/bin/$PLATFORM/amd64/kubectl
+        curl --max-time 300 -LO https://storage.googleapis.com/kubernetes-release/release/$KUBECTL_VERSION/bin/$PLATFORM/amd64/kubectl
 
         [ -w /usr/local/bin ] && SUDO="" || SUDO=sudo
 
