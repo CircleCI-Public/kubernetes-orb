@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  orb-tools: circleci/orb-tools@9.2.1
+  orb-tools: circleci/orb-tools@10.0.5
   kubernetes: circleci/kubernetes@dev:alpha
 
 # Pipeline parameters
@@ -31,7 +31,7 @@ executors:
 
   macos:
     macos:
-      xcode: "10.1.0"
+      xcode: 12.5.1
 
 commands:
   start-minikube:
