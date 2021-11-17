@@ -87,7 +87,7 @@ steps:
         if [ -n "${ACTION_TYPE}" ]; then
           set -- "$@" "${ACTION_TYPE}"
 
-          if [ "${ACTION_TYPE}" == "apply" ] && [ "${SERVER_SIDE_APPLY}" == "true"]; then
+          if [ "${ACTION_TYPE}" == "apply" ] && [ "${SERVER_SIDE_APPLY}" == "true" ]; then
             set -- "$@" --server-side
           fi
         fi
