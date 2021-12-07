@@ -65,8 +65,9 @@ parameters:
   dry-run:
     description: |
       Whether the kubectl command will be executed in dry-run mode.
-    type: boolean
-    default: false
+      Must be "none", "server", or "client"
+    type: string
+    default: "none"
   show-kubectl-command:
     description: |
       Whether to show the kubectl command used.
