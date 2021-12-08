@@ -89,8 +89,8 @@ parameters:
   dry-run:
     description: |
       Whether the kubectl command will be executed in dry-run mode.
-    type: boolean
-    default: false
+    type: string
+    default: "none"
   kustomize:
     description: |
       Enable it to run the kubectl command with the option -k for kustomize.
@@ -154,9 +154,10 @@ steps:
         if [ -n "${NAMESPACE}" ]; then
             set -- "$@" --namespace="${NAMESPACE}"
         fi
-        if [ "${DRY_RUN}" == "true" ]; then
-          set -- "$@" --dry-run
-        fi
+        # if [ "${DRY_RUN}" == "true" ]; then
+        #   set -- "$@" --dry-run
+        # fi
+        set -- "$@" --dry-run="$DRY_RUN"
         set -- "$@" --wait="${WAIT}"
         set -- "$@" --cascade="${CASCADE}"
         <<# parameters.show-kubectl-command >>set -x<</ parameters.show-kubectl-command >>
