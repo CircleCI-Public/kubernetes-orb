@@ -102,10 +102,7 @@ steps:
         if [ -n "${NAMESPACE}" ]; then
             set -- "$@" --namespace="${NAMESPACE}"
         fi
-        # if [ -n "${DRY_RUN}" ]; then
-        #   set -- "$@" --dry-run
-        # fi
-        set -- "$@" --dry-run="$DRY_RUN"
+        set -- "$@" --dry-run="${DRY_RUN}"
         <<# parameters.show-kubectl-command >>set -x<</ parameters.show-kubectl-command >>
         kubectl "$@"
         <<# parameters.show-kubectl-command >>set +x<</ parameters.show-kubectl-command >>
