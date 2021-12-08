@@ -123,7 +123,6 @@ jobs:
       - kubernetes/update-container-image:
           resource-name: "deployment/nginx-deployment"
           container-image-updates: "nginx=nginx:1.9.1 redis=redis:5-buster"
-          record: true
       - kubernetes/get-rollout-status:
           resource-name: "deployment/nginx-deployment"
           watch-rollout-status: true
