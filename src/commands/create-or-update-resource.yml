@@ -55,6 +55,7 @@ parameters:
   dry-run:
     description: |
       Whether the kubectl command will be executed in dry-run mode.
+      Must be "none", "server", or "client"
     type: string
     default: "none"
   kustomize:

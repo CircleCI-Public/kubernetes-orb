@@ -48,6 +48,7 @@ parameters:
     description: |
       If true, cascades the deletion of the resources managed by this resource.
       (e.g. Pods created by a ReplicationController)
+      Must be "background" or "foreground"
     type: string
     default: "background"
   force:
@@ -89,6 +90,7 @@ parameters:
   dry-run:
     description: |
       Whether the kubectl command will be executed in dry-run mode.
+      Must be "none", "server", or "client"
     type: string
     default: "none"
   kustomize:
