@@ -105,7 +105,6 @@ steps:
         # if [ -n "${DRY_RUN}" ]; then
         #   set -- "$@" --dry-run
         # fi
-        
         set -- "$@" --dry-run="$DRY_RUN"
         <<# parameters.show-kubectl-command >>set -x<</ parameters.show-kubectl-command >>
         kubectl "$@"
