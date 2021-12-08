@@ -60,8 +60,9 @@ parameters:
   dry-run:
     description: |
       Whether the kubectl command will be executed in dry-run mode.
-    type: string
+    type: enum
     default: "none"
+    enum: ["none", "server", "client"]
   show-kubectl-command:
     description: |
       Whether to show the kubectl command used.

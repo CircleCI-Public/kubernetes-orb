@@ -56,8 +56,9 @@ parameters:
     description: |
       Whether the kubectl command will be executed in dry-run mode.
       Must be "none", "server", or "client"
-    type: string
+    type: enum
     default: "none"
+    enum: ["none", "server", "client"]
   kustomize:
     description: |
       Enable it to run the kubectl command with the option -k for kustomize.

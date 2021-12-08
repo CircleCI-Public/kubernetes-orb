@@ -49,8 +49,9 @@ parameters:
       If true, cascades the deletion of the resources managed by this resource.
       (e.g. Pods created by a ReplicationController)
       Must be "background" or "foreground"
-    type: string
+    type: enum
     default: "background"
+    enum: ["background", "foreground"]
   force:
     description: |
       Only used when "0" is specified for grace-period. If true, immediately remove
@@ -91,8 +92,9 @@ parameters:
     description: |
       Whether the kubectl command will be executed in dry-run mode.
       Must be "none", "server", or "client"
-    type: string
+    type: enum
     default: "none"
+    enum: ["none", "server", "client"]
   kustomize:
     description: |
       Enable it to run the kubectl command with the option -k for kustomize.
