@@ -61,8 +61,8 @@ parameters:
     description: |
       Whether the kubectl command will be executed in dry-run mode.
     type: enum
-    default: "none"
-    enum: ["none", "server", "client"]
+    default: ""
+    enum: ["", "server", "client"]
   show-kubectl-command:
     description: |
       Whether to show the kubectl command used.
@@ -93,7 +93,9 @@ steps:
         if [ -n "${NAMESPACE}" ]; then
           set -- "$@" --namespace="${NAMESPACE}"
         fi
-        set -- "$@" "--dry-run=${DRY_RUN}"
+        if [ -n "${DRY_RUN}" ]; then
+          set -- "$@" --dry-run "${DRY_RUN}"
+        fi
         <<# parameters.show-kubectl-command >>set -x<</ parameters.show-kubectl-command >>
         kubectl set image "$@"
         <<# parameters.show-kubectl-command >>set +x<</ parameters.show-kubectl-command >>
