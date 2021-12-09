@@ -80,7 +80,7 @@ steps:
   - run:
       name: Create/update the k8s resource
       command: |
-        RESOURCE_FILE_PATH="<< parameters.resource-file-path >>"
+        RESOURCE_FILE_PATH=<< parameters.resource-file-path >>
         ACTION_TYPE="<< parameters.action-type >>"
         NAMESPACE="<< parameters.namespace >>"
         DRY_RUN="<< parameters.dry-run >>"
@@ -93,13 +93,13 @@ steps:
             set -- "$@" --server-side
           fi
         fi
-        if [ -n "${RESOURCE_FILE_PATH}" ]; then
+        if [ -n "$RESOURCE_FILE_PATH" ]; then
           if [ "${KUSTOMIZE}" == "true" ]; then
             set -- "$@" -k
           else
             set -- "$@" -f
           fi
-          set -- "$@" "${RESOURCE_FILE_PATH}"
+          set -- "$@" "$RESOURCE_FILE_PATH"
         fi
         if [ -n "${NAMESPACE}" ]; then
             set -- "$@" --namespace="${NAMESPACE}"
