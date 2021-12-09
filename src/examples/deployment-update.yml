@@ -18,4 +18,3 @@ usage:
             resource-name: "deployment/nginx-deployment"
             container-image-updates: "nginx=nginx:1.9.1"
             get-rollout-status: true
-            record: true

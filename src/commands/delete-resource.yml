@@ -48,8 +48,10 @@ parameters:
     description: |
       If true, cascades the deletion of the resources managed by this resource.
       (e.g. Pods created by a ReplicationController)
-    type: boolean
-    default: true
+      Must be "background" or "foreground"
+    type: enum
+    default: "background"
+    enum: ["background", "foreground"]
   force:
     description: |
       Only used when "0" is specified for grace-period. If true, immediately remove
@@ -89,8 +91,10 @@ parameters:
   dry-run:
     description: |
       Whether the kubectl command will be executed in dry-run mode.
-    type: boolean
-    default: false
+      Must be "none", "server", or "client"
+    type: enum
+    default: "none"
+    enum: ["none", "server", "client"]
   kustomize:
     description: |
       Enable it to run the kubectl command with the option -k for kustomize.
@@ -154,9 +158,7 @@ steps:
         if [ -n "${NAMESPACE}" ]; then
             set -- "$@" --namespace="${NAMESPACE}"
         fi
-        if [ "${DRY_RUN}" == "true" ]; then
-          set -- "$@" --dry-run
-        fi
+        set -- "$@" --dry-run="${DRY_RUN}"
         set -- "$@" --wait="${WAIT}"
         set -- "$@" --cascade="${CASCADE}"
         <<# parameters.show-kubectl-command >>set -x<</ parameters.show-kubectl-command >>

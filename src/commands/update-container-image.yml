@@ -30,11 +30,6 @@ parameters:
       The kubernetes namespace that should be used.
     type: string
     default: ""
-  record:
-    description: |
-      Whether to record the update
-    type: boolean
-    default: false
   get-rollout-status:
     description: |
       Get the status of the rollout.
@@ -65,8 +60,9 @@ parameters:
   dry-run:
     description: |
       Whether the kubectl command will be executed in dry-run mode.
-    type: boolean
-    default: false
+    type: enum
+    default: "none"
+    enum: ["none", "server", "client"]
   show-kubectl-command:
     description: |
       Whether to show the kubectl command used.
@@ -81,7 +77,6 @@ steps:
         RESOURCE_NAME="<< parameters.resource-name >>"
         CONTAINER_IMAGE_UPDATES="<< parameters.container-image-updates >>"
         NAMESPACE="<< parameters.namespace >>"
-        RECORD="<< parameters.record >>"
         DRY_RUN="<< parameters.dry-run >>"
         if [ -n "${RESOURCE_FILE_PATH}" ]; then
           set -- "$@" -f
@@ -98,7 +93,6 @@ steps:
         if [ -n "${NAMESPACE}" ]; then
           set -- "$@" --namespace="${NAMESPACE}"
         fi
-        set -- "$@" "--record=${RECORD}"
         set -- "$@" "--dry-run=${DRY_RUN}"
         <<# parameters.show-kubectl-command >>set -x<</ parameters.show-kubectl-command >>
         kubectl set image "$@"
