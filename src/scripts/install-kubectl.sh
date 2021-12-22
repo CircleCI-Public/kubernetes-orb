@@ -1,6 +1,6 @@
 #!/bin/bash
 KUBECTL_VERSION=$(eval echo "$PARAM_KUBECTL_VERSION")
-if [[ KUBECTL_VERSION == "latest" ]]; then
+if [[ "$KUBECTL_VERSION" == "latest" ]]; then
     # get latest kubectl release
     KUBECTL_VERSION=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)
 fi
