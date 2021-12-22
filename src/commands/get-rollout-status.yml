@@ -46,7 +46,7 @@ steps:
         PARAM_WATCH_ROLLOUT_STATUS: << parameters.watch-rollout-status >>
         PARAM_PINNED_REVISION_TO_WATCH: << parameters.pinned-revision-to-watch >>
         PARAM_WATCH_TIMEOUT: << parameters.watch-timeout >>
-      command: <<include(scripts/get-rollout-status)>>
+      command: <<include(scripts/get-rollout-status.sh)>>
   - run:
       name: Get a description of the resource
       environment:
