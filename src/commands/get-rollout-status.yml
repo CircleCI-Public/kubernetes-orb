@@ -40,37 +40,15 @@ parameters:
 steps:
   - run:
       name: Show the resource rollout status
-      command: |
-        RESOURCE_NAME="<< parameters.resource-name >>"
-        NAMESPACE="<< parameters.namespace >>"
-        WATCH_ROLLOUT_STATUS="<< parameters.watch-rollout-status >>"
-        PINNED_REVISION_TO_WATCH="<< parameters.pinned-revision-to-watch >>"
-        WATCH_TIMEOUT="<< parameters.watch-timeout >>"
-        if [ -n "${RESOURCE_NAME}" ]; then
-          set -- "$@" "${RESOURCE_NAME}"
-        fi
-        if [ -n "${NAMESPACE}" ]; then
-          set -- "$@" "--namespace=${NAMESPACE}"
-        fi
-        if [ "${WATCH_ROLLOUT_STATUS}" == "true" ]; then
-          set -- "$@" --watch=true
-          if [ -n "${PINNED_REVISION_TO_WATCH}" ]; then
-            set -- "$@" "--revision=${PINNED_REVISION_TO_WATCH}"
-          fi
-          if [ -n "${WATCH_TIMEOUT}" ]; then
-            set -- "$@" "--timeout=${WATCH_TIMEOUT}"
-          fi
-        fi
-        <<# parameters.show-kubectl-command >>set -x<</ parameters.show-kubectl-command >>
-        kubectl rollout status "$@"
-        <<# parameters.show-kubectl-command >>set +x<</ parameters.show-kubectl-command >>
+      environment:
+        PARAM_RESOURCE_NAME: << parameters.resource-name >>
+        PARAM_NAMESPACE: << parameters.namespace >>
+        PARAM_WATCH_ROLLOUT_STATUS: << parameters.watch-rollout-status >>
+        PARAM_PINNED_REVISION_TO_WATCH: << parameters.pinned-revision-to-watch >>
+        PARAM_WATCH_TIMEOUT: << parameters.watch-timeout >>
+      command: <<include(scripts/get-rollout-status)>>
   - run:
       name: Get a description of the resource
-      command: |
-        NAMESPACE="<< parameters.namespace >>"
-        if [ -n "${NAMESPACE}" ]; then
-          set -- "$@" "--namespace=${NAMESPACE}"
-        fi
-        <<# parameters.show-kubectl-command >>set -x<</ parameters.show-kubectl-command >>
-        kubectl describe << parameters.resource-name >> "$@"
-        <<# parameters.show-kubectl-command >>set +x<</ parameters.show-kubectl-command >>
+      environment:
+        PARAM_NAMESPACE: << parameters.namespace >>
+      command: <<include(scripts/describe.sh)>>

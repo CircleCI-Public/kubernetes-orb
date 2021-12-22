@@ -1,17 +1,20 @@
 version: 2.1
 
 orbs:
+  kubernetes: circleci/kubernetes@<<pipeline.parameters.dev-orb-version>>
   orb-tools: circleci/orb-tools@10.0.5
-  kubernetes: circleci/kubernetes@dev:alpha
 
 # Pipeline parameters
 parameters:
-  # These pipeline parameters are required by the "trigger-integration-tests-workflow"
-  # job, by default.
   run-integration-tests:
+    description: An internal flag to prevent integration test from running before a development version has been created.
     type: boolean
     default: false
   dev-orb-version:
+    description: >
+      The development version of the orb to test.
+      This value is automatically adjusted by the "trigger-integration-tests-workflow" job to correspond with the specific version created by the commit and should not be edited.
+      A "dev:alpha" version must exist for the initial pipeline run.
     type: string
     default: "dev:alpha"
 
@@ -25,13 +28,13 @@ executors:
 
   minikube:
     machine:
-      image: ubuntu-1604:201903-01
+      image: ubuntu-2004:202107-02
     environment:
       CHANGE_MINIKUBE_NONE_USER=true
 
   macos:
     macos:
-      xcode: 12.5.1
+      xcode: 13.2.0
 
 commands:
   start-minikube:

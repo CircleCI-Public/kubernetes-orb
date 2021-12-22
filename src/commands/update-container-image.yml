@@ -72,33 +72,12 @@ parameters:
 steps:
   - run:
       name: Update the container image(s) for the resource
-      command: |
-        RESOURCE_FILE_PATH="<< parameters.resource-file-path >>"
-        RESOURCE_NAME="<< parameters.resource-name >>"
-        CONTAINER_IMAGE_UPDATES="<< parameters.container-image-updates >>"
-        NAMESPACE="<< parameters.namespace >>"
-        DRY_RUN="<< parameters.dry-run >>"
-        if [ -n "${RESOURCE_FILE_PATH}" ]; then
-          set -- "$@" -f
-          set -- "$@" "${RESOURCE_FILE_PATH}"
-        elif [ -n "${RESOURCE_NAME}" ]; then
-          set -- "$@" "${RESOURCE_NAME}"
-        else
-          echo "Error: The update-container-image command requires either resource-file-path or resource-name to be specified."
-          exit 1
-        fi
-        if [ -n "${CONTAINER_IMAGE_UPDATES}" ]; then
-          set -- "$@" ${CONTAINER_IMAGE_UPDATES}
-        fi
-        if [ -n "${NAMESPACE}" ]; then
-          set -- "$@" --namespace="${NAMESPACE}"
-        fi
-        if [ -n "${DRY_RUN}" ]; then
-          set -- "$@" --dry-run "${DRY_RUN}"
-        fi
-        <<# parameters.show-kubectl-command >>set -x<</ parameters.show-kubectl-command >>
-        kubectl set image "$@"
-        <<# parameters.show-kubectl-command >>set +x<</ parameters.show-kubectl-command >>
+      environment:
+        PARAM_RESOURCE_FILE_PATH: << parameters.resource-file-path >>
+        PARAM_RESOURCE_NAME: << parameters.resource-name >>
+        PARAM_CONTAINER_IMAGE_UPDATES: << parameters.container-image-updates >>
+        PARAM_NAMESPACE: << parameters.namespace >>
+      command: <<include(scripts/update-container-image.sh)>>
   - when:
       condition: << parameters.get-rollout-status >>
       steps:
