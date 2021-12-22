@@ -11,10 +11,12 @@ if [ -n "$(uname | grep "Darwin")" ]; then
 fi
 
 # download kops
-curl -LO https://github.com/kubernetes/kops/releases/download/$KOPS_VERSION/kops-$PLATFORM-amd64
+curl -Lo kops https://github.com/kubernetes/kops/releases/download/$KOPS_VERSION/kops-$PLATFORM-amd64
+
+chmod +x kops
+sudo mv kops /usr/local/bin/kops
 
 [ -w /usr/local/bin ] && SUDO="" || SUDO=sudo
 
-$SUDO chmod +x kops-$PLATFORM-amd64
-
-$SUDO mv kops-$PLATFORM-amd64 /usr/local/bin/kops
+$SUDO chmod +x kops
+$SUDO mv kops /usr/local/bin/kops
