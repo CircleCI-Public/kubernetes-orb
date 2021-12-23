@@ -39,6 +39,9 @@ parameters:
 steps:
   - run:
       name: Rollback the resource
+      environment:
+        PARAM_RESOURCE_NAME: << parameters.resource-name >>
+        PARAM_NAMESPACE: << parameters.namespace >>
       command: <<include(scripts/rollback.sh)>>
   - when:
       condition: << parameters.get-rollout-status >>

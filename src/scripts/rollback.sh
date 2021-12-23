@@ -1,6 +1,6 @@
 #!/bin/bash
-RESOURCE_NAME="<< parameters.resource-name >>"
-NAMESPACE="<< parameters.namespace >>"
+RESOURCE_NAME=$(eval echo "$PARAM_RESOURCE_NAME")
+NAMESPACE=$(eval echo "$PARAM_NAMESPACE")
 if [ -n "${RESOURCE_NAME}" ]; then
     set -- "$@" "${RESOURCE_NAME}"
 fi
