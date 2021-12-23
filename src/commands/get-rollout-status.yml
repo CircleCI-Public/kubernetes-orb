@@ -50,5 +50,6 @@ steps:
   - run:
       name: Get a description of the resource
       environment:
+        PARAM_RESOURCE_NAME: << parameters.resource-name >>
         PARAM_NAMESPACE: << parameters.namespace >>
       command: <<include(scripts/describe.sh)>>
