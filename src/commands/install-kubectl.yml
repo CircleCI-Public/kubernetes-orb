@@ -12,4 +12,4 @@ steps:
       name: Install kubectl
       environment:
         PARAM_KUBECTL_VERSION: <<parameters.kubectl-version>>
-      command: <<include(scripts/install-kubeconfig.sh)>>
+      command: <<include(scripts/install-kubectl.sh)>>
