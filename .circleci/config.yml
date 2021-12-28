@@ -138,7 +138,7 @@ jobs:
           now: true
           wait: true
       - kubernetes/create-or-update-resource:
-          resource-file-path: "tests/kustomize/overlays/staging"
+          resource-file-path: "project/tests/kustomize/overlays/staging"
           resource-name: "deployment/staging-hello"
           kustomize: true
           get-rollout-status: true
