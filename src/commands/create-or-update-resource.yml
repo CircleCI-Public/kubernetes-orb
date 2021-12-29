@@ -79,37 +79,14 @@ parameters:
 steps:
   - run:
       name: Create/update the k8s resource
-      command: |
-        RESOURCE_FILE_PATH=<< parameters.resource-file-path >>
-        ACTION_TYPE="<< parameters.action-type >>"
-        NAMESPACE="<< parameters.namespace >>"
-        DRY_RUN="<< parameters.dry-run >>"
-        KUSTOMIZE="<< parameters.kustomize >>"
-        SERVER_SIDE_APPLY="<< parameters.server-side-apply >>"
-        if [ -n "${ACTION_TYPE}" ]; then
-          set -- "$@" "${ACTION_TYPE}"
-
-          if [ "${ACTION_TYPE}" == "apply" ] && [ "${SERVER_SIDE_APPLY}" == "true" ]; then
-            set -- "$@" --server-side
-          fi
-        fi
-        if [ -n "$RESOURCE_FILE_PATH" ]; then
-          if [ "${KUSTOMIZE}" == "true" ]; then
-            set -- "$@" -k
-          else
-            set -- "$@" -f
-          fi
-          set -- "$@" "$RESOURCE_FILE_PATH"
-        fi
-        if [ -n "${NAMESPACE}" ]; then
-            set -- "$@" --namespace="${NAMESPACE}"
-        fi
-        if [ -n "${DRY_RUN}" ]; then
-            set -- "$@" --dry-run="${DRY_RUN}"
-        fi
-        <<# parameters.show-kubectl-command >>set -x<</ parameters.show-kubectl-command >>
-        kubectl "$@"
-        <<# parameters.show-kubectl-command >>set +x<</ parameters.show-kubectl-command >>
+      environment:
+        PARAM_RESOURCE_FILE_PATH: << parameters.resource-file-path >>
+        PARAM_ACTION_TYPE: << parameters.action-type >>
+        PARAM_NAMESPACE: << parameters.namespace >>
+        PARAM_DRY_RUN: << parameters.dry-run >>
+        PARAM_KUSTOMIZE: << parameters.kustomize >>
+        PARAM_SERVER_SIDE_APPLY: << parameters.server-side-apply >>
+      command: <<include(scripts/create-or-update-resource.sh)>>
   - when:
       condition: << parameters.get-rollout-status >>
       steps:

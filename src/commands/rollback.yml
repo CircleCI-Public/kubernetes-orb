@@ -39,18 +39,10 @@ parameters:
 steps:
   - run:
       name: Rollback the resource
-      command: |
-        RESOURCE_NAME="<< parameters.resource-name >>"
-        NAMESPACE="<< parameters.namespace >>"
-        if [ -n "${RESOURCE_NAME}" ]; then
-          set -- "$@" "${RESOURCE_NAME}"
-        fi
-        if [ -n "${NAMESPACE}" ]; then
-          set -- "$@" "--namespace=${NAMESPACE}"
-        fi
-        <<# parameters.show-kubectl-command >>set -x<</ parameters.show-kubectl-command >>
-        kubectl rollout undo "$@"
-        <<# parameters.show-kubectl-command >>set +x<</ parameters.show-kubectl-command >>
+      environment:
+        PARAM_RESOURCE_NAME: << parameters.resource-name >>
+        PARAM_NAMESPACE: << parameters.namespace >>
+      command: <<include(scripts/rollback.sh)>>
   - when:
       condition: << parameters.get-rollout-status >>
       steps:

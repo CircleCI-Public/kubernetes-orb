@@ -109,60 +109,19 @@ parameters:
 steps:
   - run:
       name: Delete the k8s resource(s)
-      command: |
-        RESOURCE_FILE_PATH="<< parameters.resource-file-path >>"
-        RESOURCE_TYPES="<< parameters.resource-types >>"
-        RESOURCE_NAMES="<< parameters.resource-names >>"
-        LABEL_SELECTOR="<< parameters.label-selector >>"
-        ALL="<< parameters.all >>"
-        CASCADE="<< parameters.cascade >>"
-        FORCE="<< parameters.force >>"
-        GRACE_PERIOD="<< parameters.grace-period >>"
-        IGNORE_NOT_FOUND="<< parameters.ignore-not-found >>"
-        NOW="<< parameters.now >>"
-        WAIT="<< parameters.wait >>"
-        NAMESPACE="<< parameters.namespace >>"
-        DRY_RUN="<< parameters.dry-run >>"
-        KUSTOMIZE="<< parameters.kustomize >>"
-        if [ -n "${RESOURCE_FILE_PATH}" ]; then
-          if [ "${KUSTOMIZE}" == "true" ]; then
-            set -- "$@" -k
-          else
-            set -- "$@" -f
-          fi
-          set -- "$@" "${RESOURCE_FILE_PATH}"
-        elif [ -n "${RESOURCE_TYPES}" ]; then
-          set -- "$@" "${RESOURCE_TYPES}"
-          if [ -n "${RESOURCE_NAMES}" ]; then
-            set -- "$@" ${RESOURCE_NAMES}
-          elif [ -n "${LABEL_SELECTOR}" ]; then
-            set -- "$@" -l
-            set -- "$@" "${LABEL_SELECTOR}"
-          fi
-        fi
-        if [ "${ALL}" == "true" ]; then
-          set -- "$@" --all=true
-        fi
-        if [ "${FORCE}" == "true" ]; then
-          set -- "$@" --force=true
-        fi
-        if [ "${GRACE_PERIOD}" != "-1" ]; then
-          set -- "$@" --grace-period="${GRACE_PERIOD}"
-        fi
-        if [ "${IGNORE_NOT_FOUND}" == "true" ]; then
-          set -- "$@" --ignore-not-found=true
-        fi
-        if [ "${NOW}" == "true" ]; then
-          set -- "$@" --now=true
-        fi
-        if [ -n "${NAMESPACE}" ]; then
-            set -- "$@" --namespace="${NAMESPACE}"
-        fi
-        if [ -n "${DRY_RUN}" ]; then
-            set -- "$@" --dry-run="${DRY_RUN}"
-        fi
-        set -- "$@" --wait="${WAIT}"
-        set -- "$@" --cascade="${CASCADE}"
-        <<# parameters.show-kubectl-command >>set -x<</ parameters.show-kubectl-command >>
-        kubectl delete "$@"
-        <<# parameters.show-kubectl-command >>set +x<</ parameters.show-kubectl-command >>
+      environment:
+        PARAM_RESOURCE_FILE_PATH: << parameters.resource-file-path >>
+        PARAM_RESOURCE_TYPES: << parameters.resource-types >>
+        PARAM_RESOURCE_NAMES: << parameters.resource-names >>
+        PARAM_LABEL_SELECTOR: << parameters.label-selector >>
+        PARAM_ALL: << parameters.all >>
+        PARAM_CASCADE: << parameters.cascade >>
+        PARAM_FORCE: << parameters.force >>
+        PARAM_GRACE_PERIOD: << parameters.grace-period >>
+        PARAM_IGNORE_NOT_FOUND: << parameters.ignore-not-found >>
+        PARAM_NOW: << parameters.now >>
+        PARAM_WAIT: << parameters.wait >>
+        PARAM_NAMESPACE: << parameters.namespace >>
+        PARAM_DRY_RUN: << parameters.dry-run >>
+        PARAM_KUSTOMIZE: << parameters.kustomize >>
+      command: <<include(scripts/delete-resource.sh)>>
