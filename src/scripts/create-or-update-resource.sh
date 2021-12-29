@@ -5,6 +5,8 @@ NAMESPACE=$(eval echo "$PARAM_NAMESPACE")
 DRY_RUN=$(eval echo "$PARAM_DRY_RUN")
 KUSTOMIZE=$(eval echo "$PARAM_KUSTOMIZE")
 SERVER_SIDE_APPLY=$(eval echo "$PARAM_SERVER_SIDE_APPLY")
+
+echo "This is kustomize! $KUSTOMIZE" >> kus.txt
 if [ -n "${ACTION_TYPE}" ]; then
     set -- "$@" "${ACTION_TYPE}"
 
