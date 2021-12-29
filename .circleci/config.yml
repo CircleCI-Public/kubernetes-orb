@@ -70,6 +70,7 @@ commands:
       - kubernetes/install:
           kubectl-version: v1.15.2
           kops-version: 1.12.2
+          max-time: true
       - run:
           name: Test kops version
           command: kops version | grep "1.12.2"
