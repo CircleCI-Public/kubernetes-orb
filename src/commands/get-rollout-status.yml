@@ -59,4 +59,5 @@ steps:
       environment:
         PARAM_RESOURCE_NAME: << parameters.resource-name >>
         PARAM_NAMESPACE: << parameters.namespace >>
+        PARAM_RESOURCE_FILE_PATH: << parameters.resource-file-path >>
       command: <<include(scripts/describe.sh)>>
