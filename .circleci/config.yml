@@ -140,7 +140,7 @@ jobs:
       - kubernetes/create-or-update-resource:
           resource-file-path: "tests/kustomize/overlays/staging"
           resource-name: "deployment/staging-hello"
-          kustomize: true
+          kustomize: "true"
           get-rollout-status: true
           show-kubectl-command: true
       - kubernetes/delete-resource:
