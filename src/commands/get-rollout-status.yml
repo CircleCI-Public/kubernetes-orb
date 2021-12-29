@@ -9,6 +9,7 @@ parameters:
     description: |
       Resource name in the format TYPE/NAME e.g. deployment/nginx-deployment
     type: string
+    default: ""
   namespace:
     description: |
       The kubernetes namespace that should be used.
