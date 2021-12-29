@@ -15,7 +15,7 @@ if [ -n "${ACTION_TYPE}" ]; then
     fi
 fi
 if [ -n "$RESOURCE_FILE_PATH" ]; then
-    if [ "${KUSTOMIZE}" == "true" ]; then
+    if [ "${KUSTOMIZE}" == "1" ]; then
     set -- "$@" -k
     else
     set -- "$@" -f
