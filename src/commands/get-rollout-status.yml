@@ -36,6 +36,11 @@ parameters:
       Whether to show the kubectl command used.
     type: boolean
     default: false
+  resource-file-path:
+    description: |
+      Path to file used to get the status of the resource.
+    type: string
+    default: ""
 
 steps:
   - run:
@@ -46,6 +51,7 @@ steps:
         PARAM_WATCH_ROLLOUT_STATUS: << parameters.watch-rollout-status >>
         PARAM_PINNED_REVISION_TO_WATCH: << parameters.pinned-revision-to-watch >>
         PARAM_WATCH_TIMEOUT: << parameters.watch-timeout >>
+        PARAM_RESOURCE_FILE_PATH: << parameters.resource-file-path >>
       command: <<include(scripts/get-rollout-status.sh)>>
   - run:
       name: Get a description of the resource
