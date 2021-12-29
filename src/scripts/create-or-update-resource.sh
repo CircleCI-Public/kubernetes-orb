@@ -29,6 +29,7 @@ fi
 if [ "$SHOW_EKSCTL_COMMAND" == "1" ]; then
     set -x
 fi
+echo "$KUSTOMIZE" >> var.txt
 echo "$@" >> command.txt
 kubectl "$@"
 if [ "$SHOW_EKSCTL_COMMAND" == "1" ]; then
