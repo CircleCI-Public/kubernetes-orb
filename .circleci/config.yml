@@ -128,7 +128,7 @@ jobs:
           resource-name: "deployment/nginx-deployment"
           container-image-updates: "nginx=nginx:1.9.1 redis=redis:5-buster"
       - kubernetes/get-rollout-status:
-          resource-name: "deployment/nginx-deployment"
+          resource-file-path: "tests/nginx-deployment/deployment.yaml"
           watch-rollout-status: true
       - kubernetes/rollback:
           resource-name: "deployment/nginx-deployment"
