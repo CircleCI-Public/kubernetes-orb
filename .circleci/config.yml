@@ -155,7 +155,6 @@ workflows:
     unless: << pipeline.parameters.run-integration-tests >>
     jobs:
       - orb-tools/lint
-
       - orb-tools/pack:
           requires:
             - orb-tools/lint
