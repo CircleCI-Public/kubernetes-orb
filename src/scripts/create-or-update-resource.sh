@@ -6,7 +6,6 @@ DRY_RUN=$(eval echo "$PARAM_DRY_RUN")
 KUSTOMIZE=$(eval echo "$PARAM_KUSTOMIZE")
 SERVER_SIDE_APPLY=$(eval echo "$PARAM_SERVER_SIDE_APPLY")
 
-echo "This is kustomize! $KUSTOMIZE" >> kus.txt
 if [ -n "${ACTION_TYPE}" ]; then
     set -- "$@" "${ACTION_TYPE}"
 
@@ -31,8 +30,6 @@ fi
 if [ "$SHOW_EKSCTL_COMMAND" == "1" ]; then
     set -x
 fi
-echo "$KUSTOMIZE" >> var.txt
-echo "$@" >> command.txt
 kubectl "$@"
 if [ "$SHOW_EKSCTL_COMMAND" == "1" ]; then
     set +x

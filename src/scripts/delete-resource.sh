@@ -14,7 +14,7 @@ NAMESPACE=$(eval echo "$PARAM_NAMESPACE")
 DRY_RUN=$(eval echo "$PARAM_DRY_RUN")
 KUSTOMIZE=$(eval echo "$PARAM_KUSTOMIZE")
 if [ -n "${RESOURCE_FILE_PATH}" ]; then
-    if [ "${KUSTOMIZE}" == "true" ]; then
+    if [ "${KUSTOMIZE}" == "1" ]; then
     set -- "$@" -k
     else
     set -- "$@" -f
@@ -23,7 +23,7 @@ if [ -n "${RESOURCE_FILE_PATH}" ]; then
 elif [ -n "${RESOURCE_TYPES}" ]; then
     set -- "$@" "${RESOURCE_TYPES}"
     if [ -n "${RESOURCE_NAMES}" ]; then
-    set -- "$@" ${RESOURCE_NAMES}
+    set -- "$@" "${RESOURCE_NAMES}"
     elif [ -n "${LABEL_SELECTOR}" ]; then
     set -- "$@" -l
     set -- "$@" "${LABEL_SELECTOR}"
