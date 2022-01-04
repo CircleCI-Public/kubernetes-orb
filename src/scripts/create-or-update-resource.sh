@@ -17,6 +17,7 @@ if [ -n "${ACTION_TYPE}" ]; then
     fi
 fi
 if [ -n "$RESOURCE_FILE_PATH" ]; then
+    echo "IT GETS HERE #1" > test.txt
     if [ "$ENVSUBST" == "1" ]; then        
         $SUDO apt-get update && $SUDO apt-get install -y gettext-base
         FILENAME="$(basename "$RESOURCE_FILE_PATH")"
