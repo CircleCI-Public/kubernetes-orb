@@ -6,7 +6,7 @@ spec:
   selector:
     matchLabels:
       app: nginx
-  replicas: $REPLICAS # tells deployment to run 2 pods matching the template
+  replicas: $SHLVL # tells deployment to run 2 pods matching the template
   template:
     metadata:
       labels:
