@@ -17,12 +17,10 @@ if [ -n "${ACTION_TYPE}" ]; then
     fi
 fi
 if [ -n "$RESOURCE_FILE_PATH" ]; then
-    if [ "$ENVSUBST" == "true" ]; then
-        if [ "$ENVSUBST" == "true" ]; then
+    if [ "$ENVSUBST" == "true" ]; then        
         $SUDO apt-get update && $SUDO apt-get install -y gettext-base
         FILENAME="$(basename "$RESOURCE_FILE_PATH")"
         envsubst < "$RESOURCE_FILE_PATH" > /tmp/"$FILENAME"; mv /tmp/"$FILENAME" "$RESOURCE_FILE_PATH"
-    fi
     fi
 
     if [ "${KUSTOMIZE}" == "1" ]; then
