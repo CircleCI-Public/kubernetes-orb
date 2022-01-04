@@ -125,8 +125,6 @@ jobs:
           get-rollout-status: true
           show-kubectl-command: true
           envsubst: true
-      - store_artifacts:
-          path: test.txt
       - kubernetes/update-container-image:
           resource-name: "deployment/nginx-deployment"
           container-image-updates: "nginx=nginx:1.9.1 redis=redis:5-buster"

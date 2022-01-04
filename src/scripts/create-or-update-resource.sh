@@ -12,22 +12,18 @@ ENVSUBST=$(eval echo "$PARAM_ENVSUBST")
 if [ -n "${ACTION_TYPE}" ]; then
     set -- "$@" "${ACTION_TYPE}"
 
-    if [ "${ACTION_TYPE}" == "apply" ] && [ "${SERVER_SIDE_APPLY}" == "true" ]; then
+    if [ "${ACTION_TYPE}" == "apply" ] && [ "$SERVER_SIDE_APPLY" == "1" ]; then
     set -- "$@" --server-side
     fi
 fi
 if [ -n "$RESOURCE_FILE_PATH" ]; then
-    echo "IT GETS HERE #1" > test.txt
-    echo "$PARAM_ENVSUBST" >> test.txt
-    echo "$ENVSUBST" >> test.txt
     if [ "$ENVSUBST" == "1" ]; then        
         $SUDO apt-get update && $SUDO apt-get install -y gettext-base
         FILENAME="$(basename "$RESOURCE_FILE_PATH")"
         envsubst < "$RESOURCE_FILE_PATH" > /tmp/"$FILENAME"; mv /tmp/"$FILENAME" "$RESOURCE_FILE_PATH"
-        echo "THIS WORKS " >> test.txt
     fi
 
-    if [ "${KUSTOMIZE}" == "1" ]; then
+    if [ "$KUSTOMIZE" == "1" ]; then
         set -- "$@" -k
     else
         set -- "$@" -f
