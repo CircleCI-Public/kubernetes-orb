@@ -1,0 +1,15 @@
+description: |
+  Installs kops (latest release, by default)
+  Requirements: curl, amd64 architecture
+
+parameters:
+  kops-version:
+    type: string
+    default: "latest"
+
+steps:
+  - run:
+      name: Install kops
+      environment:
+        PARAM_KOPS_VERSION: <<parameters.kops-version>>
+      command: <<include(scripts/install-kops.sh)>>

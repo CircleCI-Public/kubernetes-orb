@@ -1,0 +1,16 @@
+description: |
+  Install kops and kubectl
+
+usage:
+  version: 2.1
+
+  orbs:
+    kubernetes: circleci/kubernetes@x.y.z
+
+  jobs:
+    build:
+      macos:
+        xcode: "13.2"
+      steps:
+        - checkout
+        - kubernetes/install

@@ -1,0 +1,53 @@
+description: |
+  Rollback a deployment or daemonset resource.
+  Requirements: kubeconfig should be configured to connect to the cluster.
+
+parameters:
+  resource-name:
+    description: |
+      Resource name in the format TYPE/NAME e.g. deployment/nginx-deployment
+    type: string
+  namespace:
+    description: |
+      The kubernetes namespace that should be used.
+    type: string
+    default: ""
+  get-rollout-status:
+    description: |
+      Get the status of the rollout.
+      This can only be used for resource types that are valid
+      for usage with `kubectl rollout` subcommands.
+    type: boolean
+    default: false
+  watch-rollout-status:
+    description: |
+      Whether to watch the status of the latest rollout until it's done.
+    type: boolean
+    default: true
+  watch-timeout:
+    description: |
+      The length of time to wait before ending the watch, zero means never.
+      Any other values should contain a corresponding time unit (e.g. 1s, 2m, 3h).
+    type: string
+    default: ""
+  show-kubectl-command:
+    description: |
+      Whether to show the kubectl command used.
+    type: boolean
+    default: false
+
+steps:
+  - run:
+      name: Rollback the resource
+      environment:
+        PARAM_RESOURCE_NAME: << parameters.resource-name >>
+        PARAM_NAMESPACE: << parameters.namespace >>
+      command: <<include(scripts/rollback.sh)>>
+  - when:
+      condition: << parameters.get-rollout-status >>
+      steps:
+        - get-rollout-status:
+            resource-name: << parameters.resource-name >>
+            namespace: << parameters.namespace >>
+            watch-rollout-status: << parameters.watch-rollout-status >>
+            watch-timeout: << parameters.watch-timeout >>
