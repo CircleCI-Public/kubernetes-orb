@@ -14,7 +14,7 @@ NAMESPACE=$(eval echo "$PARAM_NAMESPACE")
 DRY_RUN=$(eval echo "$PARAM_DRY_RUN")
 KUSTOMIZE=$(eval echo "$PARAM_KUSTOMIZE")
 if [ -n "${RESOURCE_FILE_PATH}" ]; then
-    if [ "${KUSTOMIZE}" == "1" ]; then
+    if [ "$KUSTOMIZE" == "1" ]; then
     set -- "$@" -k
     else
     set -- "$@" -f
@@ -35,7 +35,7 @@ fi
 if [ "${FORCE}" == "true" ]; then
     set -- "$@" --force=true
 fi
-if [ "${GRACE_PERIOD}" != "-1" ]; then
+if [ "$GRACE_PERIOD" != "-1" ]; then
     set -- "$@" --grace-period="${GRACE_PERIOD}"
 fi
 if [ "${IGNORE_NOT_FOUND}" == "true" ]; then
