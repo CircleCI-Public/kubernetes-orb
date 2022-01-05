@@ -9,9 +9,15 @@ parameters:
   kubectl-version:
     type: string
     default: "latest"
+  max-time:
+    description: |
+      This parameter will enable the curl command to not timeout for 600 seconds
+    type: boolean
+    default: false
 
 steps:
   - install-kops:
       kops-version: << parameters.kops-version >>
   - install-kubectl:
       kubectl-version: << parameters.kubectl-version >>
+      max-time: << parameters.max-time >>

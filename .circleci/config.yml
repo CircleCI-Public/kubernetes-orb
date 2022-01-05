@@ -70,6 +70,7 @@ commands:
       - kubernetes/install:
           kubectl-version: v1.15.2
           kops-version: 1.12.2
+          max-time: true
       - run:
           name: Test kops version
           command: kops version | grep "1.12.2"
@@ -123,11 +124,12 @@ jobs:
           resource-name: "deployment/nginx-deployment"
           get-rollout-status: true
           show-kubectl-command: true
+          envsubst: true
       - kubernetes/update-container-image:
           resource-name: "deployment/nginx-deployment"
           container-image-updates: "nginx=nginx:1.9.1 redis=redis:5-buster"
       - kubernetes/get-rollout-status:
-          resource-name: "deployment/nginx-deployment"
+          resource-file-path: "tests/nginx-deployment/deployment.yaml"
           watch-rollout-status: true
       - kubernetes/rollback:
           resource-name: "deployment/nginx-deployment"
@@ -154,7 +156,6 @@ workflows:
     unless: << pipeline.parameters.run-integration-tests >>
     jobs:
       - orb-tools/lint
-
       - orb-tools/pack:
           requires:
             - orb-tools/lint

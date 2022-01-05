@@ -10,7 +10,7 @@ usage:
   jobs:
     build:
       macos:
-        xcode: "10.3"
+        xcode: "13.2"
       steps:
         - checkout
         - kubernetes/install-kubectl

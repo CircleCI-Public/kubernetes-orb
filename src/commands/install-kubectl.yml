@@ -6,10 +6,16 @@ parameters:
   kubectl-version:
     type: string
     default: "latest"
+  max-time:
+    description: |
+      This parameter will enable the curl command to not timeout for 600 seconds
+    type: boolean
+    default: false
 
 steps:
   - run:
       name: Install kubectl
       environment:
         PARAM_KUBECTL_VERSION: <<parameters.kubectl-version>>
+        PARAM_MAX_TIME: <<parameters.max-time>>
       command: <<include(scripts/install-kubectl.sh)>>

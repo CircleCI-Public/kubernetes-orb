@@ -75,6 +75,11 @@ parameters:
       Only effective if action-type is set to `apply`.
     type: boolean
     default: false
+  envsubst:
+    description: |
+      Whether to run envsubst to substitute environment variables inside the deployment.yml finalizers.
+    type: boolean
+    default: false
 
 steps:
   - run:
@@ -86,6 +91,7 @@ steps:
         PARAM_DRY_RUN: << parameters.dry-run >>
         PARAM_KUSTOMIZE: << parameters.kustomize >>
         PARAM_SERVER_SIDE_APPLY: << parameters.server-side-apply >>
+        PARAM_ENVSUBST: << parameters.envsubst >>
       command: <<include(scripts/create-or-update-resource.sh)>>
   - when:
       condition: << parameters.get-rollout-status >>
