@@ -22,7 +22,6 @@ if [ -n "$RESOURCE_FILE_PATH" ]; then
         FILENAME="$(basename "$RESOURCE_FILE_PATH")"
         envsubst < "$RESOURCE_FILE_PATH" > /tmp/"$FILENAME"; mv /tmp/"$FILENAME" "$RESOURCE_FILE_PATH"
     fi
-
     if [ "$KUSTOMIZE" == "1" ]; then
         set -- "$@" -k
     else
