@@ -5,7 +5,7 @@ NAMESPACE=$(eval echo "$PARAM_NAMESPACE")
 DRY_RUN=$(eval echo "$PARAM_DRY_RUN")
 KUSTOMIZE=$(eval echo "$PARAM_KUSTOMIZE")
 SERVER_SIDE_APPLY=$(eval echo "$PARAM_SERVER_SIDE_APPLY")
-ENVSUBST=$(eval echo "$PARAM_ENVSUBSTR")
+ENVSUBST=$(eval echo "$PARAM_ENVSUBST")
 
 [ -w /usr/local/bin ] && SUDO="" || SUDO=sudo
 
