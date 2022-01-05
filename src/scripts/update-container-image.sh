@@ -14,7 +14,7 @@ else
     exit 1
 fi
 if [ -n "${CONTAINER_IMAGE_UPDATES}" ]; then
-    set -- "$@" "${CONTAINER_IMAGE_UPDATES}"
+    set -- "$@" ${CONTAINER_IMAGE_UPDATES}
 fi
 if [ -n "${NAMESPACE}" ]; then
     set -- "$@" --namespace="${NAMESPACE}"
