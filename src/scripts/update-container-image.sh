@@ -4,6 +4,8 @@ RESOURCE_NAME=$(eval echo "$PARAM_RESOURCE_NAME")
 CONTAINER_IMAGE_UPDATES=$(eval echo "$PARAM_CONTAINER_IMAGE_UPDATES")
 NAMESPACE=$(eval echo "$PARAM_NAMESPACE")
 DRY_RUN=$(eval echo "$PARAM_DRY_RUN")
+SHOW_KUBECTL_COMMAND=$(eval echo "$PARAM_SHOW_KUBECTL_COMMAND")
+
 if [ -n "${RESOURCE_FILE_PATH}" ]; then
     set -- "$@" -f
     set -- "$@" "${RESOURCE_FILE_PATH}"
@@ -22,10 +24,10 @@ fi
 if [ -n "${DRY_RUN}" ]; then
     set -- "$@" --dry-run "${DRY_RUN}"
 fi
-if [ "$SHOW_EKSCTL_COMMAND" == "1" ]; then
+if [ "$SHOW_KUBECTL_COMMAND" == "1" ]; then
     set -x
 fi
 kubectl set image "$@"
-if [ "$SHOW_EKSCTL_COMMAND" == "1" ]; then
+if [ "$SHOW_KUBECTL_COMMAND" == "1" ]; then
     set +x
 fi

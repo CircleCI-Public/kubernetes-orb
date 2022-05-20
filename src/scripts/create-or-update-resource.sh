@@ -4,6 +4,7 @@ ACTION_TYPE=$(eval echo "$PARAM_ACTION_TYPE")
 NAMESPACE=$(eval echo "$PARAM_NAMESPACE")
 DRY_RUN=$(eval echo "$PARAM_DRY_RUN")
 KUSTOMIZE=$(eval echo "$PARAM_KUSTOMIZE")
+SHOW_KUBECTL_COMMAND=$(eval echo "$PARAM_SHOW_KUBECTL_COMMAND")
 SERVER_SIDE_APPLY=$(eval echo "$PARAM_SERVER_SIDE_APPLY")
 ENVSUBST=$(eval echo "$PARAM_ENVSUBST")
 
@@ -35,10 +36,10 @@ fi
 if [ -n "${DRY_RUN}" ]; then
     set -- "$@" --dry-run="${DRY_RUN}"
 fi
-if [ "$SHOW_EKSCTL_COMMAND" == "1" ]; then
+if [ "$SHOW_KUBECTL_COMMAND" == "1" ]; then
     set -x
 fi
 kubectl "$@"
-if [ "$SHOW_EKSCTL_COMMAND" == "1" ]; then
+if [ "$SHOW_KUBECTL_COMMAND" == "1" ]; then
     set +x
 fi

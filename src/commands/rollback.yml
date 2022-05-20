@@ -42,6 +42,7 @@ steps:
       environment:
         PARAM_RESOURCE_NAME: << parameters.resource-name >>
         PARAM_NAMESPACE: << parameters.namespace >>
+        PARAM_SHOW_KUBECTL_COMMAND: << parameters.show_kubectl_command >>
       command: <<include(scripts/rollback.sh)>>
   - when:
       condition: << parameters.get-rollout-status >>
@@ -51,3 +52,4 @@ steps:
             namespace: << parameters.namespace >>
             watch-rollout-status: << parameters.watch-rollout-status >>
             watch-timeout: << parameters.watch-timeout >>
+            show-kubectl-command: << parameters.show-kubectl-command >>

@@ -124,4 +124,5 @@ steps:
         PARAM_NAMESPACE: << parameters.namespace >>
         PARAM_DRY_RUN: << parameters.dry-run >>
         PARAM_KUSTOMIZE: << parameters.kustomize >>
+        PARAM_SHOW_KUBECTL_COMMAND: << parameters.show_kubectl_command >>
       command: <<include(scripts/delete-resource.sh)>>

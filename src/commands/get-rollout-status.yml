@@ -52,6 +52,7 @@ steps:
         PARAM_WATCH_ROLLOUT_STATUS: << parameters.watch-rollout-status >>
         PARAM_PINNED_REVISION_TO_WATCH: << parameters.pinned-revision-to-watch >>
         PARAM_WATCH_TIMEOUT: << parameters.watch-timeout >>
+        PARAM_SHOW_KUBECTL_COMMAND: << parameters.show_kubectl_command >>
         PARAM_RESOURCE_FILE_PATH: << parameters.resource-file-path >>
       command: <<include(scripts/get-rollout-status.sh)>>
   - run:
@@ -59,5 +60,6 @@ steps:
       environment:
         PARAM_RESOURCE_NAME: << parameters.resource-name >>
         PARAM_NAMESPACE: << parameters.namespace >>
+        PARAM_SHOW_KUBECTL_COMMAND: << parameters.show_kubectl_command >>
         PARAM_RESOURCE_FILE_PATH: << parameters.resource-file-path >>
       command: <<include(scripts/describe.sh)>>

@@ -13,6 +13,8 @@ WAIT=$(eval echo "$PARAM_WAIT")
 NAMESPACE=$(eval echo "$PARAM_NAMESPACE")
 DRY_RUN=$(eval echo "$PARAM_DRY_RUN")
 KUSTOMIZE=$(eval echo "$PARAM_KUSTOMIZE")
+SHOW_KUBECTL_COMMAND=$(eval echo "$PARAM_SHOW_KUBECTL_COMMAND")
+
 if [ -n "${RESOURCE_FILE_PATH}" ]; then
     if [ "${KUSTOMIZE}" == "1" ]; then
     set -- "$@" -k
@@ -52,10 +54,10 @@ if [ -n "${DRY_RUN}" ]; then
 fi
 set -- "$@" --wait="${WAIT}"
 set -- "$@" --cascade="${CASCADE}"
-if [ "$SHOW_EKSCTL_COMMAND" == "1" ]; then
+if [ "$SHOW_KUBECTL_COMMAND" == "1" ]; then
     set -x
 fi
 kubectl delete "$@"
-if [ "$SHOW_EKSCTL_COMMAND" == "1" ]; then
+if [ "$SHOW_KUBECTL_COMMAND" == "1" ]; then
     set +x
 fi
