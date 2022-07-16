@@ -11,11 +11,16 @@ if [ -n "$(uname | grep "Darwin")" ]; then
     PLATFORM="darwin"
 fi
 
+ARCH="arm64"
+if [ "$(uname -m)" == "x86_64" ]; then
+    ARCH="amd64"
+fi
+
 # download kubectl
 if [ "$MAX_TIME" == "1" ]; then
-    curl --max-time 300 -LO https://storage.googleapis.com/kubernetes-release/release/$KUBECTL_VERSION/bin/$PLATFORM/amd64/kubectl
+    curl --max-time 300 -LO https://storage.googleapis.com/kubernetes-release/release/$KUBECTL_VERSION/bin/$PLATFORM/${ARCH}/kubectl
 else 
-    curl -LO https://storage.googleapis.com/kubernetes-release/release/$KUBECTL_VERSION/bin/$PLATFORM/amd64/kubectl
+    curl -LO https://storage.googleapis.com/kubernetes-release/release/$KUBECTL_VERSION/bin/$PLATFORM/${ARCH}/kubectl
 fi
 
 [ -w /usr/local/bin ] && SUDO="" || SUDO=sudo

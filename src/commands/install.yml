@@ -1,6 +1,6 @@
 description: |
   Installs kubectl and kops (latest releases, by default)
-  Requirements: curl, amd64 architecture
+  Requirements: curl
 
 parameters:
   kops-version:
