@@ -40,10 +40,28 @@ commands:
   start-minikube:
     steps:
       - run:
+          name: Install cri-dockerd for minikube
+          command: |
+            git clone https://github.com/Mirantis/cri-dockerd.git
+            # Run these commands as root
+            ###Install GO###
+            wget https://storage.googleapis.com/golang/getgo/installer_linux
+            sudo chmod +x ./installer_linux
+            sudo ./installer_linux
+            source ~/.bash_profile
+            cd cri-dockerd
+            mkdir bin
+            go get && go build -o bin/cri-dockerd
+            mkdir -p /usr/local/bin
+            sudo install -o root -g root -m 0755 bin/cri-dockerd /usr/local/bin/cri-dockerd
+            sudo cp -a packaging/systemd/* /etc/systemd/system
+            sudo sed -i -e 's,/usr/bin/cri-dockerd,/usr/local/bin/cri-dockerd,' /etc/systemd/system/cri-docker.service
+            sudo systemctl daemon-reload
+            sudo systemctl enable cri-docker.service
+            sudo systemctl enable --now cri-docker.socket
+      - run:
           name: Start minikube
           command: |
-            sudo apt-get update
-            sudo apt-get install -y conntrack
             curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
             sudo install minikube-linux-amd64 /usr/local/bin/minikube
             sudo -E minikube start --vm-driver=none --cpus 2 --memory 2048
