@@ -78,6 +78,7 @@ steps:
         PARAM_RESOURCE_NAME: << parameters.resource_name >>
         PARAM_CONTAINER_IMAGE_UPDATES: << parameters.container_image_updates >>
         PARAM_NAMESPACE: << parameters.namespace >>
+        PARAM_SHOW_KUBECTL_COMMAND: << parameters.show_kubectl_command >>
       command: <<include(scripts/update_container_image.sh)>>
   - when:
       condition: << parameters.get_rollout_status >>

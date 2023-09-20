@@ -93,6 +93,7 @@ steps:
         PARAM_KUSTOMIZE: << parameters.kustomize >>
         PARAM_SERVER_SIDE_APPLY: << parameters.server_side_apply >>
         PARAM_ENVSUBST: << parameters.envsubst >>
+        PARAM_SHOW_KUBECTL_COMMAND: << parameters.show_kubectl_command >>
       command: <<include(scripts/create_or_update_resource.sh)>>
   - when:
       condition: << parameters.get_rollout_status >>

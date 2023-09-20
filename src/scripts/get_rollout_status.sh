@@ -23,8 +23,10 @@ if [ "${WATCH_ROLLOUT_STATUS}" == "true" ]; then
         set -- "$@" "--timeout=${WATCH_TIMEOUT}"
     fi
 fi
+set -x
 if [ -n "$RESOURCE_FILE_PATH" ]; then
     kubectl rollout status -f "$RESOURCE_FILE_PATH" "$@"
 else
     kubectl rollout status "$@"
 fi
+set +x

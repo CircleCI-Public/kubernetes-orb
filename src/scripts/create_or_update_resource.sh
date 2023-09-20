@@ -35,10 +35,12 @@ fi
 if [ -n "${DRY_RUN}" ]; then
     set -- "$@" --dry-run="${DRY_RUN}"
 fi
-if [ "$SHOW_EKSCTL_COMMAND" == "1" ]; then
+if [ "$PARAM_SHOW_KUBECTL_COMMAND" == "1" ]; then
     set -x
 fi
-kubectl "$@"
-if [ "$SHOW_EKSCTL_COMMAND" == "1" ]; then
+
+    kubectl "$@"
+
+if [ "$PARAM_SHOW_KUBECTL_COMMAND" == "1" ]; then
     set +x
 fi
