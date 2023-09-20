@@ -7,15 +7,15 @@ if [ "$KUBECTL_VERSION" == "latest" ]; then
 fi
 
 PLATFORM="linux"
-if [ -n "$(uname | grep "Darwin")" ]; then
+if uname | grep "Darwin"; then
     PLATFORM="darwin"
 fi
 
 # download kubectl
 if [ "$MAX_TIME" == "1" ]; then
-    curl --max-time 300 -LO https://storage.googleapis.com/kubernetes-release/release/$KUBECTL_VERSION/bin/$PLATFORM/amd64/kubectl
+    curl --max-time 300 -LO https://storage.googleapis.com/kubernetes-release/release/"${KUBECTL_VERSION}"/bin/"${PLATFORM}"/amd64/kubectl
 else 
-    curl -LO https://storage.googleapis.com/kubernetes-release/release/$KUBECTL_VERSION/bin/$PLATFORM/amd64/kubectl
+    curl -LO https://storage.googleapis.com/kubernetes-release/release/"${KUBECTL_VERSION}"/bin/"${PLATFORM}"/amd64/kubectl
 fi
 
 [ -w /usr/local/bin ] && SUDO="" || SUDO=sudo

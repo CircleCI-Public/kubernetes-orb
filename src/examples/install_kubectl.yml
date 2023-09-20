@@ -13,4 +13,4 @@ usage:
         xcode: "13.2"
       steps:
         - checkout
-        - kubernetes/install-kubectl
+        - kubernetes/install_kubectl

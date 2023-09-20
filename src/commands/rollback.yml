@@ -3,7 +3,7 @@ description: |
   Requirements: kubeconfig should be configured to connect to the cluster.
 
 parameters:
-  resource-name:
+  resource_name:
     description: |
       Resource name in the format TYPE/NAME e.g. deployment/nginx-deployment
     type: string
@@ -12,25 +12,26 @@ parameters:
       The kubernetes namespace that should be used.
     type: string
     default: ""
-  get-rollout-status:
+  get_rollout_status:
     description: |
       Get the status of the rollout.
       This can only be used for resource types that are valid
       for usage with `kubectl rollout` subcommands.
     type: boolean
     default: false
-  watch-rollout-status:
+  watch_rollout_status:
     description: |
       Whether to watch the status of the latest rollout until it's done.
     type: boolean
     default: true
-  watch-timeout:
+  watch_timeout:
     description: |
       The length of time to wait before ending the watch, zero means never.
-      Any other values should contain a corresponding time unit (e.g. 1s, 2m, 3h).
+      Any other values should contain a corresponding
+      time unit (e.g. 1s, 2m, 3h).
     type: string
     default: ""
-  show-kubectl-command:
+  show_kubectl_command:
     description: |
       Whether to show the kubectl command used.
     type: boolean
@@ -40,14 +41,14 @@ steps:
   - run:
       name: Rollback the resource
       environment:
-        PARAM_RESOURCE_NAME: << parameters.resource-name >>
+        PARAM_RESOURCE_NAME: << parameters.resource_name >>
         PARAM_NAMESPACE: << parameters.namespace >>
       command: <<include(scripts/rollback.sh)>>
   - when:
-      condition: << parameters.get-rollout-status >>
+      condition: << parameters.get_rollout_status >>
       steps:
-        - get-rollout-status:
-            resource-name: << parameters.resource-name >>
+        - get_rollout_status:
+            resource_name: << parameters.resource_name >>
             namespace: << parameters.namespace >>
-            watch-rollout-status: << parameters.watch-rollout-status >>
-            watch-timeout: << parameters.watch-timeout >>
+            watch_rollout_status: << parameters.watch_rollout_status >>
+            watch_timeout: << parameters.watch_timeout >>

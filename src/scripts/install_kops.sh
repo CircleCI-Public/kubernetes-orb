@@ -6,12 +6,12 @@ if [[ "$KOPS_VERSION" == "latest" ]]; then
 fi
 
 PLATFORM="linux"
-if [ -n "$(uname | grep "Darwin")" ]; then
+if uname | grep "Darwin"; then
     PLATFORM="darwin"
 fi
 
 # download kops
-curl -Lo kops https://github.com/kubernetes/kops/releases/download/$KOPS_VERSION/kops-$PLATFORM-amd64
+curl -Lo kops https://github.com/kubernetes/kops/releases/download/"${KOPS_VERSION}"/kops-"${PLATFORM}"-amd64
 
 [ -w /usr/local/bin ] && SUDO="" || SUDO=sudo
 

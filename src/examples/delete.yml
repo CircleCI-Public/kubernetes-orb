@@ -12,9 +12,9 @@ usage:
       docker:
         - image: cimg/base:stable
       steps:
-        - kubernetes/install-kubectl
-        - kubernetes/delete-resource:
-            resource-types: "deployments"
-            resource-names: "nginx-deployment"
+        - kubernetes/install_kubectl
+        - kubernetes/delete_resource:
+            resource_types: "deployments"
+            resource_names: "nginx-deployment"
             now: true
             wait: true

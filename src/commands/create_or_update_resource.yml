@@ -3,11 +3,11 @@ description: |
   Requirements: kubeconfig should be configured to connect to the cluster.
 
 parameters:
-  resource-file-path:
+  resource_file_path:
     description: |
       Path to file used to create/update the resource.
     type: string
-  action-type:
+  action_type:
     description: |
       Specify whether to use `kubectl create` or `kubectl apply`
       to create/update the resource.
@@ -19,42 +19,42 @@ parameters:
       The kubernetes namespace that should be used.
     type: string
     default: ""
-  get-rollout-status:
+  get_rollout_status:
     description: |
       Get the status of the rollout.
       This can only be used for resource types that are valid
       for usage with `kubectl rollout` subcommands.
     type: boolean
     default: false
-  resource-name:
+  resource_name:
     description: |
       Resource name in the format TYPE/NAME e.g. deployment/nginx-deployment
-      This is required if get-rollout-status is set to true.
+      This is required if get_rollout_status is set to true.
     type: string
     default: ""
-  watch-rollout-status:
+  watch_rollout_status:
     description: |
       Whether to watch the status of the latest rollout until it's done.
-      Only effective if get-rollout-status is set to true.
+      Only effective if get_rollout_status is set to true.
     type: boolean
     default: true
-  pinned-revision-to-watch:
+  pinned_revision_to_watch:
     description: |
       Pin a specific revision to be watched and abort watching if it is rolled
       over by another revision.
-      Only effective if get-rollout-status is set to true.
+      Only effective if get_rollout_status is set to true.
     type: string
     default: ""
-  watch-timeout:
+  watch_timeout:
     description: |
       The length of time to wait before ending the watch, zero means never.
-      Any other values should contain a corresponding time unit (e.g. 1s, 2m, 3h).
-      Only effective if get-rollout-status is set to true.
+      Any other values should contain corresponding time unit (e.g 1s, 2m, 3h).
+      Only effective if get_rollout_status is set to true.
     type: string
     default: ""
-  dry-run:
+  dry_run:
     description: |
-      Whether the kubectl command will be executed in dry-run mode.
+      Whether the kubectl command will be executed in dry_run mode.
       Must be "none", "server", or "client"
     type: enum
     default: ""
@@ -64,20 +64,21 @@ parameters:
       Enable it to run the kubectl command with the option -k for kustomize.
     type: boolean
     default: false
-  show-kubectl-command:
+  show_kubectl_command:
     description: |
       Whether to show the kubectl command used.
     type: boolean
     default: false
-  server-side-apply:
+  server_side_apply:
     description: |
       Whether to run apply in the server instead of the client.
-      Only effective if action-type is set to `apply`.
+      Only effective if action_type is set to `apply`.
     type: boolean
     default: false
   envsubst:
     description: |
-      Whether to run envsubst to substitute environment variables inside the deployment.yml finalizers.
+      Whether to run envsubst to substitute environment variables inside
+      the deployment.yml finalizers.
     type: boolean
     default: false
 
@@ -85,20 +86,20 @@ steps:
   - run:
       name: Create/update the k8s resource
       environment:
-        PARAM_RESOURCE_FILE_PATH: << parameters.resource-file-path >>
-        PARAM_ACTION_TYPE: << parameters.action-type >>
+        PARAM_RESOURCE_FILE_PATH: << parameters.resource_file_path >>
+        PARAM_ACTION_TYPE: << parameters.action_type >>
         PARAM_NAMESPACE: << parameters.namespace >>
-        PARAM_DRY_RUN: << parameters.dry-run >>
+        PARAM_DRY_RUN: << parameters.dry_run >>
         PARAM_KUSTOMIZE: << parameters.kustomize >>
-        PARAM_SERVER_SIDE_APPLY: << parameters.server-side-apply >>
+        PARAM_SERVER_SIDE_APPLY: << parameters.server_side_apply >>
         PARAM_ENVSUBST: << parameters.envsubst >>
-      command: <<include(scripts/create-or-update-resource.sh)>>
+      command: <<include(scripts/create_or_update_resource.sh)>>
   - when:
-      condition: << parameters.get-rollout-status >>
+      condition: << parameters.get_rollout_status >>
       steps:
-        - get-rollout-status:
-            resource-name: << parameters.resource-name >>
+        - get_rollout_status:
+            resource_name: << parameters.resource_name >>
             namespace: << parameters.namespace >>
-            watch-rollout-status: << parameters.watch-rollout-status >>
-            pinned-revision-to-watch: << parameters.pinned-revision-to-watch >>
-            watch-timeout: << parameters.watch-timeout >>
+            watch_rollout_status: << parameters.watch_rollout_status >>
+            pinned_revision_to_watch: << parameters.pinned_revision_to_watch >>
+            watch_timeout: << parameters.watch_timeout >>
