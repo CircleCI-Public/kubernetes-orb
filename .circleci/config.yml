@@ -1,224 +1,27 @@
 version: 2.1
-
+setup: true
 orbs:
-  kubernetes: circleci/kubernetes@<<pipeline.parameters.dev-orb-version>>
-  orb-tools: circleci/orb-tools@10.0.5
+  orb-tools: circleci/orb-tools@12.0
+  shellcheck: circleci/shellcheck@3.1
 
-# Pipeline parameters
-parameters:
-  run-integration-tests:
-    description: An internal flag to prevent integration test from running before a development version has been created.
-    type: boolean
-    default: false
-  dev-orb-version:
-    description: >
-      The development version of the orb to test.
-      This value is automatically adjusted by the "trigger-integration-tests-workflow" job to correspond with the specific version created by the commit and should not be edited.
-      A "dev:alpha" version must exist for the initial pipeline run.
-    type: string
-    default: "dev:alpha"
-
-executors:
-  ci-base:
-    docker:
-      - image: cimg/base:stable
-
-  machine:
-    machine: true
-
-  minikube:
-    machine:
-      image: ubuntu-2004:202107-02
-    environment:
-      CHANGE_MINIKUBE_NONE_USER=true
-
-  macos:
-    macos:
-      xcode: 13.2.0
-
-commands:
-  start-minikube:
-    steps:
-      - run:
-          name: Install cricli for minikube
-          command: |
-            VERSION="v1.24.1"
-            wget https://github.com/kubernetes-sigs/cri-tools/releases/download/$VERSION/crictl-$VERSION-linux-amd64.tar.gz
-            sudo tar zxvf crictl-$VERSION-linux-amd64.tar.gz -C /usr/local/bin
-            rm -f crictl-$VERSION-linux-amd64.tar.gz
-      - run:
-          name: Install cri-dockerd for minikube
-          command: |
-            git clone https://github.com/Mirantis/cri-dockerd.git
-            # Run these commands as root
-            ###Install GO###
-            wget https://storage.googleapis.com/golang/getgo/installer_linux
-            sudo chmod +x ./installer_linux
-            sudo ./installer_linux
-            source ~/.bash_profile
-            cd cri-dockerd
-            mkdir bin
-            go get && go build -o bin/cri-dockerd
-            mkdir -p /usr/local/bin
-            sudo install -o root -g root -m 0755 bin/cri-dockerd /usr/local/bin/cri-dockerd
-            sudo cp -a packaging/systemd/* /etc/systemd/system
-            sudo sed -i -e 's,/usr/bin/cri-dockerd,/usr/local/bin/cri-dockerd,' /etc/systemd/system/cri-docker.service
-            sudo systemctl daemon-reload
-            sudo systemctl enable cri-docker.service
-            sudo systemctl enable --now cri-docker.socket
-      - run:
-          name: Start minikube
-          command: |
-            sudo apt-get update && sudo apt-get install -y conntrack
-            curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-            sudo install minikube-linux-amd64 /usr/local/bin/minikube
-            sudo -E minikube start --vm-driver=none
-  integration-tests:
-    steps:
-      - checkout
-      - kubernetes/install
-      - run:
-          name: Test kops
-          command: kops version
-      - run:
-          name: Test kubectl
-          command: kubectl
-      - kubernetes/install-kubeconfig:
-          kubeconfig: MY_KUBECONFIG_DATA
-      - run:
-          name: Test kubeconfig output
-          command: |
-            [[ -f $HOME/.kube/config && ! -z $HOME/.kube/config && $(<$HOME/.kube/config) == "test" ]]
-  integration-tests-specific-version:
-    steps:
-      - checkout
-      - kubernetes/install:
-          kubectl-version: v1.15.2
-          kops-version: 1.12.2
-          max-time: true
-      - run:
-          name: Test kops version
-          command: kops version | grep "1.12.2"
-      - run:
-          name: Test kubectl version
-          command: |
-            set +e
-            # ignore connection refused error
-            KUBECTL_VERSION=$(kubectl version)
-            set -e
-            echo $KUBECTL_VERSION | grep "v1.15.2"
-      - kubernetes/install-kubeconfig
-      - run:
-          name: Test kubeconfig output
-          command: |
-            [[ -f $HOME/.kube/config && ! -z $HOME/.kube/config && $(<$HOME/.kube/config) == "test" ]]
-
-jobs:
-  integration-test-docker:
-    executor: ci-base
-    environment:
-      # For testing the install-kubeconfig command
-      MY_KUBECONFIG_DATA: dGVzdA==
-    steps:
-      - integration-tests
-
-  integration-test-machine:
-    executor: machine
-    environment:
-      # For testing the install-kubeconfig command
-      KUBECONFIG_DATA: dGVzdA==
-    steps:
-      - integration-tests-specific-version
-
-  integration-test-macos:
-    executor: macos
-    environment:
-      # For testing the install-kubeconfig command
-      MY_KUBECONFIG_DATA: dGVzdA==
-    steps:
-      - integration-tests
-
-  integration-test-kubectl:
-    executor: minikube
-    steps:
-      - checkout
-      - kubernetes/install-kubectl
-      - start-minikube
-      - kubernetes/create-or-update-resource:
-          resource-file-path: "tests/nginx-deployment/deployment.yaml"
-          resource-name: "deployment/nginx-deployment"
-          get-rollout-status: true
-          show-kubectl-command: true
-          envsubst: true
-      - kubernetes/update-container-image:
-          resource-name: "deployment/nginx-deployment"
-          container-image-updates: "nginx=nginx:1.9.1 redis=redis:5-buster"
-      - kubernetes/get-rollout-status:
-          resource-file-path: "tests/nginx-deployment/deployment.yaml"
-          watch-rollout-status: true
-      - kubernetes/rollback:
-          resource-name: "deployment/nginx-deployment"
-          get-rollout-status: true
-      - kubernetes/delete-resource:
-          resource-types: "deployments"
-          resource-names: "nginx-deployment"
-          now: true
-          wait: true
-      - kubernetes/create-or-update-resource:
-          resource-file-path: "tests/kustomize/overlays/staging"
-          resource-name: "deployment/staging-hello"
-          kustomize: true
-          get-rollout-status: true
-          show-kubectl-command: true
-      - kubernetes/delete-resource:
-          resource-file-path: "tests/kustomize/overlays/staging"
-          kustomize: true
-          now: true
-          wait: true
+filters: &filters
+  tags:
+    only: /.*/
 
 workflows:
-  lint_pack-validate_publish-dev:
-    unless: << pipeline.parameters.run-integration-tests >>
+  lint-pack:
     jobs:
-      - orb-tools/lint
+      - orb-tools/lint:
+          filters: *filters
       - orb-tools/pack:
-          requires:
-            - orb-tools/lint
-
-      - orb-tools/publish-dev:
-          orb-name: circleci/kubernetes
-          context: orb-publishing
-          requires:
-            - orb-tools/pack
-
-      - orb-tools/trigger-integration-tests-workflow:
-          name: trigger-integration-dev
-          context: orb-publishing
-          requires:
-            - orb-tools/publish-dev
-
-  integration-tests_prod-release:
-    when: << pipeline.parameters.run-integration-tests >>
-    jobs:
-      - integration-test-docker
-      - integration-test-machine
-      - integration-test-macos
-      - integration-test-kubectl
-
-      - orb-tools/dev-promote-prod-from-commit-subject:
-          orb-name: circleci/kubernetes
-          context: orb-publishing
-          add-pr-comment: true
-          fail-if-semver-not-indicated: true
-          publish-version-tag: true
-          bot-token-variable: GHI_TOKEN
-          bot-user: cpe-bot
-          ssh-fingerprints: e0:f8:4b:34:54:de:74:23:af:7e:3d:39:28:cb:2f:7d
-          requires:
-            - integration-test-docker
-            - integration-test-machine
-            - integration-test-macos
-            - integration-test-kubectl
-          filters:
-            branches:
-              only: master
+          filters: *filters
+      - orb-tools/review:
+          filters: *filters
+      - shellcheck/check:
+          filters: *filters
+      - orb-tools/continue:
+          orb_name: kubernetes
+          pipeline_number: << pipeline.number >>
+          vcs_type: << pipeline.project.type >>
+          requires: [orb-tools/lint, orb-tools/review, orb-tools/pack, shellcheck/check]
+          filters: *filters
