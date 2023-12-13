@@ -48,17 +48,17 @@ steps:
   - run:
       name: Show the resource rollout status
       environment:
-        KUBERNETES_STR_RESOURCE_NAME: << parameters.resource_name >>
-        KUBERNETES_STR_NAMESPACE: << parameters.namespace >>
+        K8_STR_RESOURCE_NAME: << parameters.resource_name >>
+        K8_STR_NAMESPACE: << parameters.namespace >>
         PARAM_WATCH_ROLLOUT_STATUS: << parameters.watch_rollout_status >>
         PARAM_PINNED_REVISION_TO_WATCH: <<parameters.pinned_revision_to_watch>>
         PARAM_WATCH_TIMEOUT: << parameters.watch_timeout >>
-        KUBERNETES_STR_RESOURCE_FILE_PATH: << parameters.resource_file_path >>
+        K8_STR_RESOURCE_FILE_PATH: << parameters.resource_file_path >>
       command: <<include(scripts/get_rollout_status.sh)>>
   - run:
       name: Get a description of the resource
       environment:
-        KUBERNETES_STR_RESOURCE_NAME: << parameters.resource_name >>
-        KUBERNETES_STR_NAMESPACE: << parameters.namespace >>
-        KUBERNETES_STR_RESOURCE_FILE_PATH: << parameters.resource_file_path >>
+        K8_STR_RESOURCE_NAME: << parameters.resource_name >>
+        K8_STR_NAMESPACE: << parameters.namespace >>
+        K8_STR_RESOURCE_FILE_PATH: << parameters.resource_file_path >>
       command: <<include(scripts/describe.sh)>>

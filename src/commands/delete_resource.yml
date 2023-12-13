@@ -111,18 +111,18 @@ steps:
   - run:
       name: Delete the k8s resource(s)
       environment:
-        KUBERNETES_STR_RESOURCE_FILE_PATH: << parameters.resource_file_path >>
-        KUBERNETES_STR_RESOURCE_TYPES: << parameters.resource_types >>
-        KUBERNETES_STR_RESOURCE_NAMES: << parameters.resource_names >>
-        KUBERNETES_STR_LABEL_SELECTOR: << parameters.label_selector >>
-        KUBERNETES_BOOL_ALL: << parameters.all >>
-        KUBERNETES_STR_CASCADE: << parameters.cascade >>
-        KUBERNETES_BOOL_FORCE: << parameters.force >>
-        KUBERNETES_INT_GRACE_PERIOD: << parameters.grace_period >>
-        KUBERNETES_BOOL_IGNORE_NOT_FOUND: << parameters.ignore_not_found >>
-        KUBERNETES_BOOL_NOW: << parameters.now >>
-        KUBERNETES_BOOL_WAIT: << parameters.wait >>
-        KUBERNETES_STR_NAMESPACE: << parameters.namespace >>
-        KUBERNETES_STR_DRY_RUN: << parameters.dry_run >>
-        KUBERNETES_STR_KUSTOMIZE: << parameters.kustomize >>
+        K8_STR_RESOURCE_FILE_PATH: << parameters.resource_file_path >>
+        K8_STR_RESOURCE_TYPES: << parameters.resource_types >>
+        K8_STR_RESOURCE_NAMES: << parameters.resource_names >>
+        K8_STR_LABEL_SELECTOR: << parameters.label_selector >>
+        K8_BOOL_ALL: << parameters.all >>
+        K8_STR_CASCADE: << parameters.cascade >>
+        K8_BOOL_FORCE: << parameters.force >>
+        K8_INT_GRACE_PERIOD: << parameters.grace_period >>
+        K8_BOOL_IGNORE_NOT_FOUND: << parameters.ignore_not_found >>
+        K8_BOOL_NOW: << parameters.now >>
+        K8_BOOL_WAIT: << parameters.wait >>
+        K8_STR_NAMESPACE: << parameters.namespace >>
+        K8_STR_DRY_RUN: << parameters.dry_run >>
+        K8_STR_KUSTOMIZE: << parameters.kustomize >>
       command: <<include(scripts/delete_resource.sh)>>

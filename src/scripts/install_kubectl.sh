@@ -1,6 +1,6 @@
 #!/bin/bash
-KUBECTL_VERSION=$(eval echo "$KUBERNETES_STR_KUBECTL_VERSION")
-MAX_TIME=$(eval echo "$KUBERNETES_BOOL_MAX_TIME")
+KUBECTL_VERSION=$(eval echo "$K8_STR_KUBECTL_VERSION")
+MAX_TIME=$(eval echo "$K8_BOOL_MAX_TIME")
 if [ "$KUBECTL_VERSION" == "latest" ]; then
     # get latest kubectl release
     KUBECTL_VERSION=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)

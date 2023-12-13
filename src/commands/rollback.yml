@@ -41,8 +41,8 @@ steps:
   - run:
       name: Rollback the resource
       environment:
-        KUBERNETES_STR_RESOURCE_NAME: << parameters.resource_name >>
-        KUBERNETES_STR_NAMESPACE: << parameters.namespace >>
+        K8_STR_RESOURCE_NAME: << parameters.resource_name >>
+        K8_STR_NAMESPACE: << parameters.namespace >>
       command: <<include(scripts/rollback.sh)>>
   - when:
       condition: << parameters.get_rollout_status >>

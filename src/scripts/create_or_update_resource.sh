@@ -1,11 +1,11 @@
 #!/bin/bash
-RESOURCE_FILE_PATH=$(eval echo "$KUBERNETES_STR_RESOURCE_FILE_PATH")
-ACTION_TYPE=$(eval echo "$KUBERNETES_STR_ACTION_TYPE")
-NAMESPACE=$(eval echo "$KUBERNETES_STR_NAMESPACE")
-DRY_RUN=$(eval echo "$KUBERNETES_STR_DRY_RUN")
-KUSTOMIZE=$(eval echo "$KUBERNETES_STR_KUSTOMIZE")
-SERVER_SIDE_APPLY=$(eval echo "$KUBERNETES_BOOL_SERVER_SIDE_APPLY")
-ENVSUBST=$(eval echo "$KUBERNETES_BOOL_ENVSUBST")
+RESOURCE_FILE_PATH=$(eval echo "$K8_STR_RESOURCE_FILE_PATH")
+ACTION_TYPE=$(eval echo "$K8_STR_ACTION_TYPE")
+NAMESPACE=$(eval echo "$K8_STR_NAMESPACE")
+DRY_RUN=$(eval echo "$K8_STR_DRY_RUN")
+KUSTOMIZE=$(eval echo "$K8_STR_KUSTOMIZE")
+SERVER_SIDE_APPLY=$(eval echo "$K8_BOOL_SERVER_SIDE_APPLY")
+ENVSUBST=$(eval echo "$K8_BOOL_ENVSUBST")
 
 [ -w /usr/local/bin ] && SUDO="" || SUDO=sudo
 
@@ -35,12 +35,12 @@ fi
 if [ -n "${DRY_RUN}" ]; then
     set -- "$@" --dry-run="${DRY_RUN}"
 fi
-if [ "$KUBERNETES_BOOL_SHOW_KUBECTL_COMMAND" == "1" ]; then
+if [ "$K8_BOOL_SHOW_KUBECTL_COMMAND" == "1" ]; then
     set -x
 fi
 
     kubectl "$@"
 
-if [ "$KUBERNETES_BOOL_SHOW_KUBECTL_COMMAND" == "1" ]; then
+if [ "$K8_BOOL_SHOW_KUBECTL_COMMAND" == "1" ]; then
     set +x
 fi
