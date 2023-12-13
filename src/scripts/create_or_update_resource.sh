@@ -1,11 +1,11 @@
 #!/bin/bash
-RESOURCE_FILE_PATH=$(eval echo "$PARAM_RESOURCE_FILE_PATH")
-ACTION_TYPE=$(eval echo "$PARAM_ACTION_TYPE")
-NAMESPACE=$(eval echo "$PARAM_NAMESPACE")
-DRY_RUN=$(eval echo "$PARAM_DRY_RUN")
-KUSTOMIZE=$(eval echo "$PARAM_KUSTOMIZE")
-SERVER_SIDE_APPLY=$(eval echo "$PARAM_SERVER_SIDE_APPLY")
-ENVSUBST=$(eval echo "$PARAM_ENVSUBST")
+RESOURCE_FILE_PATH=$(eval echo "$KUBERNETES_STR_RESOURCE_FILE_PATH")
+ACTION_TYPE=$(eval echo "$KUBERNETES_STR_ACTION_TYPE")
+NAMESPACE=$(eval echo "$KUBERNETES_STR_NAMESPACE")
+DRY_RUN=$(eval echo "$KUBERNETES_STR_DRY_RUN")
+KUSTOMIZE=$(eval echo "$KUBERNETES_STR_KUSTOMIZE")
+SERVER_SIDE_APPLY=$(eval echo "$KUBERNETES_BOOL_SERVER_SIDE_APPLY")
+ENVSUBST=$(eval echo "$KUBERNETES_BOOL_ENVSUBST")
 
 [ -w /usr/local/bin ] && SUDO="" || SUDO=sudo
 
@@ -35,12 +35,12 @@ fi
 if [ -n "${DRY_RUN}" ]; then
     set -- "$@" --dry-run="${DRY_RUN}"
 fi
-if [ "$PARAM_SHOW_KUBECTL_COMMAND" == "1" ]; then
+if [ "$KUBERNETES_BOOL_SHOW_KUBECTL_COMMAND" == "1" ]; then
     set -x
 fi
 
     kubectl "$@"
 
-if [ "$PARAM_SHOW_KUBECTL_COMMAND" == "1" ]; then
+if [ "$KUBERNETES_BOOL_SHOW_KUBECTL_COMMAND" == "1" ]; then
     set +x
 fi

@@ -11,5 +11,5 @@ steps:
   - run:
       name: Install kops
       environment:
-        PARAM_KOPS_VERSION: <<parameters.kops_version>>
+        KUBERNETES_STR_KOPS_VERSION: <<parameters.kops_version>>
       command: <<include(scripts/install_kops.sh)>>

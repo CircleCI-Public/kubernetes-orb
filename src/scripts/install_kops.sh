@@ -1,5 +1,5 @@
 #!/bin/bash
-KOPS_VERSION=$(eval echo "$PARAM_KOPS_VERSION")
+KOPS_VERSION=$(eval echo "$KUBERNETES_STR_KOPS_VERSION")
 if [[ "$KOPS_VERSION" == "latest" ]]; then
     # get latest kops release
     KOPS_VERSION=$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)

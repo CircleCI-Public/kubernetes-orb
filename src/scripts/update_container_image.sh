@@ -1,9 +1,9 @@
 #!/bin/bash
-RESOURCE_FILE_PATH=$(eval echo "$PARAM_RESOURCE_FILE_PATH")
-RESOURCE_NAME=$(eval echo "$PARAM_RESOURCE_NAME")
-CONTAINER_IMAGE_UPDATES=$(eval echo "$PARAM_CONTAINER_IMAGE_UPDATES")
-NAMESPACE=$(eval echo "$PARAM_NAMESPACE")
-DRY_RUN=$(eval echo "$PARAM_DRY_RUN")
+RESOURCE_FILE_PATH=$(eval echo "$KUBERNETES_STR_RESOURCE_FILE_PATH")
+RESOURCE_NAME=$(eval echo "$KUBERNETES_STR_RESOURCE_NAME")
+CONTAINER_IMAGE_UPDATES=$(eval echo "$KUBERNETES_STR_CONTAINER_IMAGE_UPDATES")
+NAMESPACE=$(eval echo "$KUBERNETES_STR_NAMESPACE")
+DRY_RUN=$(eval echo "$KUBERNETES_STR_DRY_RUN")
 
 if [ -n "${RESOURCE_FILE_PATH}" ]; then
     set -- "$@" -f
@@ -28,12 +28,12 @@ fi
 if [ -n "${DRY_RUN}" ]; then
     set -- "$@" --dry-run "${DRY_RUN}"
 fi
-if [ "$PARAM_SHOW_KUBECTL_COMMAND" == "1" ]; then
+if [ "$KUBERNETES_BOOL_SHOW_KUBECTL_COMMAND" == "1" ]; then
     set -x
 fi
 
     kubectl set image "$@"
 
-if [ "$PARAM_SHOW_KUBECTL_COMMAND" == "1" ]; then
+if [ "$KUBERNETES_BOOL_SHOW_KUBECTL_COMMAND" == "1" ]; then
     set +x
 fi

@@ -16,6 +16,6 @@ steps:
   - run:
       name: Install kubectl
       environment:
-        PARAM_KUBECTL_VERSION: <<parameters.kubectl_version>>
-        PARAM_MAX_TIME: <<parameters.max_time>>
+        KUBERNETES_STR_KUBECTL_VERSION: <<parameters.kubectl_version>>
+        KUBERNETES_BOOL_MAX_TIME: <<parameters.max_time>>
       command: <<include(scripts/install_kubectl.sh)>>
