@@ -1,0 +1,179 @@
+version: 2.1
+
+orbs:
+  orb-tools: circleci/orb-tools@12.0
+  kubernetes: {}
+filters: &filters
+  tags:
+    only: /.*/
+release-filters: &release-filters
+  branches:
+    ignore: /.*/
+  tags:
+    only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+# Pipeline parameters
+executors:
+  docker-base:
+    docker:
+      - image: cimg/base:current
+
+  machine:
+    machine: true
+
+  minikube:
+    machine:
+      image: ubuntu-2004:202107-02
+    environment:
+      CHANGE_MINIKUBE_NONE_USER=true
+
+  macos:
+    macos:
+      xcode: 14.2.0
+
+commands:
+  start-minikube:
+    steps:
+      - run:
+          name: Install cricli for minikube
+          command: |
+            VERSION="v1.24.1"
+            wget https://github.com/kubernetes-sigs/cri-tools/releases/download/$VERSION/crictl-$VERSION-linux-amd64.tar.gz
+            sudo tar zxvf crictl-$VERSION-linux-amd64.tar.gz -C /usr/local/bin
+            rm -f crictl-$VERSION-linux-amd64.tar.gz
+      - run:
+          name: Start minikube
+          command: |
+            curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 \
+            && chmod +x minikube
+            sudo mkdir -p /usr/local/bin/
+            sudo install minikube /usr/local/bin/
+            # Start minikube with Docker driver
+            sudo -u circleci minikube start --driver=docker
+
+  integration-tests:
+    steps:
+      - checkout
+      - kubernetes/install
+      - run:
+          name: Test kops
+          command: kops version
+      - run:
+          name: Test kubectl
+          command: kubectl
+      - kubernetes/install_kubeconfig:
+          kubeconfig: MY_KUBECONFIG_DATA
+      - run:
+          name: Test kubeconfig output
+          command: |
+            set -x
+            [[ -f $HOME/.kube/config && ! -z $HOME/.kube/config && $(<$HOME/.kube/config) == "test" ]]
+            set +x
+  integration-tests-specific-version:
+    steps:
+      - checkout
+      - kubernetes/install:
+          kubectl_version: v1.15.2
+          kops_version: 1.12.2
+          max_time: true
+      - run:
+          name: Test kops version
+          command: kops version | grep "1.12.2"
+      - run:
+          name: Test kubectl version
+          command: |
+            set +e
+            # ignore connection refused error
+            KUBECTL_VERSION=$(kubectl version)
+            set -e
+            echo $KUBECTL_VERSION | grep "v1.15.2"
+      - kubernetes/install_kubeconfig
+      - run:
+          name: Test kubeconfig output
+          command: |
+            [[ -f $HOME/.kube/config && ! -z $HOME/.kube/config && $(<$HOME/.kube/config) == "test" ]]
+
+jobs:
+  integration-test-docker:
+    executor: docker-base
+    environment:
+      # For testing the install_kubeconfig command
+      MY_KUBECONFIG_DATA: dGVzdA==
+    steps:
+      - integration-tests
+
+  integration-test-machine:
+    executor: machine
+    environment:
+      # For testing the install_kubeconfig command
+      KUBECONFIG_DATA: dGVzdA==
+    steps:
+      - integration-tests-specific-version
+
+  integration-test-macos:
+    executor: macos
+    environment:
+      # For testing the install_kubeconfig command
+      MY_KUBECONFIG_DATA: dGVzdA==
+    steps:
+      - integration-tests
+
+  integration-test-kubectl:
+    executor: minikube
+    steps:
+      - checkout
+      - kubernetes/install_kubectl
+      - start-minikube
+      - kubernetes/create_or_update_resource:
+          resource_file_path: "tests/nginx-deployment/deployment.yaml"
+          resource_name: "deployment/nginx-deployment"
+          get_rollout_status: true
+          show_kubectl_command: true
+          envsubst: true
+      - kubernetes/update_container_image:
+          resource_name: "deployment/nginx-deployment"
+          container_image_updates: "nginx=nginx:1.9.1 redis=redis:5-buster"
+          show_kubectl_command: true
+      - kubernetes/get_rollout_status:
+          resource_file_path: "tests/nginx-deployment/deployment.yaml"
+          watch_rollout_status: true
+      - kubernetes/rollback:
+          resource_name: "deployment/nginx-deployment"
+          get_rollout_status: true
+      - kubernetes/delete_resource:
+          resource_types: "deployments"
+          resource_names: "nginx-deployment"
+          now: true
+          wait: true
+      - kubernetes/create_or_update_resource:
+          resource_file_path: "tests/kustomize/overlays/staging"
+          resource_name: "deployment/staging-hello"
+          kustomize: true
+          get_rollout_status: true
+          show_kubectl_command: true
+      - kubernetes/delete_resource:
+          resource_file_path: "tests/kustomize/overlays/staging"
+          kustomize: true
+          now: true
+          wait: true
+
+workflows:
+  test-deploy:
+    jobs:
+      - integration-test-docker:
+          filters: *filters
+      - integration-test-machine:
+          filters: *filters
+      - integration-test-macos:
+          filters: *filters
+      - integration-test-kubectl:
+          filters: *filters
+      - orb-tools/pack:
+          filters: *release-filters
+      - orb-tools/publish:
+          orb_name: circleci/kubernetes
+          vcs_type: << pipeline.project.type >>
+          pub_type: production
+          enable_pr_comment: true
+          context: orb-publisher
+          requires: [ orb-tools/pack, integration-test-docker, integration-test-machine, integration-test-macos, integration-test-kubectl ]
+          filters: *release-filters

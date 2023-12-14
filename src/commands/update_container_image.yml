@@ -4,20 +4,20 @@ description: |
   Requirements: kubeconfig should be configured to connect to the cluster.
 
 parameters:
-  resource-file-path:
+  resource_file_path:
     description: |
       Path to file used to update the resource.
-      Either resource-file-path or resource-name need to be specified.
+      Either resource_file_path or resource_name need to be specified.
     type: string
     default: ""
-  resource-name:
+  resource_name:
     description: |
       Resource name in the format TYPE/NAME e.g. deployment/nginx-deployment
-      Either resource-file-path or resource-name need to be specified.
-      This is required if get-rollout-status is set to true.
+      Either resource_file_path or resource_name need to be specified.
+      This is required if get_rollout_status is set to true.
     type: string
     default: ""
-  container-image-updates:
+  container_image_updates:
     description: |
       Specify a list of container image updates
       (space-delimited name value pairs in the form
@@ -30,40 +30,41 @@ parameters:
       The kubernetes namespace that should be used.
     type: string
     default: ""
-  get-rollout-status:
+  get_rollout_status:
     description: |
       Get the status of the rollout.
       This can only be used for resource types that are valid
       for usage with `kubectl rollout` subcommands.
     type: boolean
     default: false
-  watch-rollout-status:
+  watch_rollout_status:
     description: |
       Whether to watch the status of the latest rollout until it's done.
-      Only effective if get-rollout-status is set to true.
+      Only effective if get_rollout_status is set to true.
     type: boolean
     default: true
-  pinned-revision-to-watch:
+  pinned_revision_to_watch:
     description: |
       Pin a specific revision to be watched and abort watching if it is rolled
       over by another revision.
-      Only effective if get-rollout-status is set to true.
+      Only effective if get_rollout_status is set to true.
     type: string
     default: ""
-  watch-timeout:
+  watch_timeout:
     description: |
       The length of time to wait before ending the watch, zero means never.
-      Any other values should contain a corresponding time unit (e.g. 1s, 2m, 3h).
-      Only effective if get-rollout-status is set to true.
+      Any other values should contain a corresponding
+      time unit (e.g. 1s, 2m, 3h). Only effective if
+      get_rollout_status is set to true.
     type: string
     default: ""
-  dry-run:
+  dry_run:
     description: |
-      Whether the kubectl command will be executed in dry-run mode.
+      Whether the kubectl command will be executed in dry_run mode.
     type: enum
     default: ""
     enum: ["", "server", "client"]
-  show-kubectl-command:
+  show_kubectl_command:
     description: |
       Whether to show the kubectl command used.
     type: boolean
@@ -73,17 +74,18 @@ steps:
   - run:
       name: Update the container image(s) for the resource
       environment:
-        PARAM_RESOURCE_FILE_PATH: << parameters.resource-file-path >>
-        PARAM_RESOURCE_NAME: << parameters.resource-name >>
-        PARAM_CONTAINER_IMAGE_UPDATES: << parameters.container-image-updates >>
-        PARAM_NAMESPACE: << parameters.namespace >>
-      command: <<include(scripts/update-container-image.sh)>>
+        K8_STR_RESOURCE_FILE_PATH: << parameters.resource_file_path >>
+        K8_STR_RESOURCE_NAME: << parameters.resource_name >>
+        K8_STR_CONTAINER_IMAGE_UPDATES: << parameters.container_image_updates >>
+        K8_STR_NAMESPACE: << parameters.namespace >>
+        K8_BOOL_SHOW_KUBECTL_COMMAND: << parameters.show_kubectl_command >>
+      command: <<include(scripts/update_container_image.sh)>>
   - when:
-      condition: << parameters.get-rollout-status >>
+      condition: << parameters.get_rollout_status >>
       steps:
-        - get-rollout-status:
-            resource-name: << parameters.resource-name >>
+        - get_rollout_status:
+            resource_name: << parameters.resource_name >>
             namespace: << parameters.namespace >>
-            watch-rollout-status: << parameters.watch-rollout-status >>
-            pinned-revision-to-watch: << parameters.pinned-revision-to-watch >>
-            watch-timeout: << parameters.watch-timeout >>
+            watch_rollout_status: << parameters.watch_rollout_status >>
+            pinned_revision_to_watch: << parameters.pinned_revision_to_watch >>
+            watch_timeout: << parameters.watch_timeout >>

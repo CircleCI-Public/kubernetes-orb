@@ -1,6 +1,6 @@
 #!/bin/bash
-RESOURCE_NAME=$(eval echo "$PARAM_RESOURCE_NAME")
-NAMESPACE=$(eval echo "$PARAM_NAMESPACE")
+RESOURCE_NAME=$(eval echo "$K8_STR_RESOURCE_NAME")
+NAMESPACE=$(eval echo "$K8_STR_NAMESPACE")
 if [ -n "${RESOURCE_NAME}" ]; then
     set -- "$@" "${RESOURCE_NAME}"
 fi

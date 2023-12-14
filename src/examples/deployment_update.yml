@@ -1,5 +1,5 @@
 description: |
-  Deploying kubernetes resources.
+  Update kubernetes resource.
 
 usage:
   version: 2.1
@@ -8,14 +8,13 @@ usage:
     kubernetes: circleci/kubernetes@x.y.z
 
   jobs:
-    create-update:
+    update:
       docker:
         - image: cimg/base:stable
       steps:
         - checkout
         - kubernetes/install_kubectl
-        - kubernetes/create_or_update_resource:
-            resource_file_path: "tests/nginx-deployment/deployment.yaml"
+        - kubernetes/update_container_image:
             resource_name: "deployment/nginx-deployment"
+            container_image_updates: "nginx=nginx:1.9.1"
             get_rollout_status: true
-            show_kubectl_command: true
