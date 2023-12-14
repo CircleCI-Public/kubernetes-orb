@@ -26,6 +26,11 @@ executors:
     environment:
       CHANGE_MINIKUBE_NONE_USER=true
 
+  arm:
+    machine:
+      image: ubuntu-2204:2022.07.1
+    resource_class: arm.medium
+
   macos:
     macos:
       xcode: 14.2.0
@@ -111,6 +116,14 @@ jobs:
 
   integration-test-macos:
     executor: macos
+    environment:
+      # For testing the install_kubeconfig command
+      MY_KUBECONFIG_DATA: dGVzdA==
+    steps:
+      - integration-tests
+
+  integration-test-arm:
+    executor: arm
     environment:
       # For testing the install_kubeconfig command
       MY_KUBECONFIG_DATA: dGVzdA==
