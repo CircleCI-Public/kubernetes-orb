@@ -17,9 +17,6 @@ executors:
     docker:
       - image: cimg/base:current
 
-  machine:
-    machine: true
-
   minikube:
     machine:
       image: ubuntu-2004:202107-02
