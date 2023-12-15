@@ -28,6 +28,10 @@ executors:
       image: ubuntu-2204:2022.07.1
     resource_class: arm.medium
 
+  machine:
+    machine:
+      image: ubuntu-2204:2022.07.1
+
   macos:
     macos:
       xcode: 14.2.0
