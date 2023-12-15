@@ -172,6 +172,8 @@ jobs:
 workflows:
   test-deploy:
     jobs:
+      - integration-test-arm:
+          filters: *filters
       - integration-test-docker:
           filters: *filters
       - integration-test-machine:
