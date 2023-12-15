@@ -1,6 +1,6 @@
 description: |
   Installs kubectl (latest release, by default)
-  Requirements: curl, amd64 architecture
+  Requirements: curl
 
 parameters:
   kubectl_version:

@@ -10,8 +10,12 @@ if uname | grep "Darwin"; then
     PLATFORM="darwin"
 fi
 
+ARCH="arm64"
+if uname -m | grep "x86_64"; then
+    ARCH="amd64"
+fi
 # download kops
-curl -Lo kops https://github.com/kubernetes/kops/releases/download/"${KOPS_VERSION}"/kops-"${PLATFORM}"-amd64
+curl -Lo kops https://github.com/kubernetes/kops/releases/download/"${KOPS_VERSION}"/kops-"${PLATFORM}"-"${ARCH}"
 
 [ -w /usr/local/bin ] && SUDO="" || SUDO=sudo
 
