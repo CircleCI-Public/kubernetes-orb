@@ -84,7 +84,7 @@ parameters:
 
 steps:
   - run:
-      name: Create/update the k8s resource from << parameters.resource_file_path >>
+      name: Create/update k8s resource from <<parameters.resource_file_path>>
       environment:
         K8_STR_RESOURCE_FILE_PATH: << parameters.resource_file_path >>
         K8_STR_ACTION_TYPE: << parameters.action_type >>
