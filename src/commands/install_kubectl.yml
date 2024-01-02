@@ -4,6 +4,8 @@ description: |
 
 parameters:
   kubectl_version:
+    description: |
+      specify version using "v1.xx" format
     type: string
     default: "latest"
   max_time:

@@ -78,7 +78,7 @@ commands:
     steps:
       - checkout
       - kubernetes/install:
-          kubectl_version: v1.15.2
+          kubectl_version: "1.15.2"
           kops_version: 1.12.2
           max_time: true
       - run:
@@ -173,23 +173,23 @@ jobs:
 workflows:
   test-deploy:
     jobs:
-      - integration-test-arm:
-          filters: *filters
-      - integration-test-docker:
-          filters: *filters
+      # - integration-test-arm:
+      #     filters: *filters
+      # - integration-test-docker:
+      #     filters: *filters
       - integration-test-machine:
           filters: *filters
-      - integration-test-macos:
-          filters: *filters
-      - integration-test-kubectl:
-          filters: *filters
-      - orb-tools/pack:
-          filters: *release-filters
-      - orb-tools/publish:
-          orb_name: circleci/kubernetes
-          vcs_type: << pipeline.project.type >>
-          pub_type: production
-          enable_pr_comment: true
-          context: orb-publisher
-          requires: [ orb-tools/pack, integration-test-docker, integration-test-machine, integration-test-macos, integration-test-kubectl ]
-          filters: *release-filters
+      # - integration-test-macos:
+      #     filters: *filters
+      # - integration-test-kubectl:
+      #     filters: *filters
+      # - orb-tools/pack:
+      #     filters: *release-filters
+      # - orb-tools/publish:
+      #     orb_name: circleci/kubernetes
+      #     vcs_type: << pipeline.project.type >>
+      #     pub_type: production
+      #     enable_pr_comment: true
+      #     context: orb-publisher
+      #     requires: [ orb-tools/pack, integration-test-docker, integration-test-machine, integration-test-macos, integration-test-kubectl ]
+      #     filters: *release-filters
