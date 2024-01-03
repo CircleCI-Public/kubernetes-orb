@@ -6,7 +6,7 @@ if [ "$KUBECTL_VERSION" == "latest" ]; then
     KUBECTL_VERSION=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)
 fi
 
-if [[ $KUBECTL_VERSION =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+if [[ "$KUBECTL_VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   echo "Valid version format."
 else
   echo "Invalid version format: ${KUBECTL_VERSION}" 
