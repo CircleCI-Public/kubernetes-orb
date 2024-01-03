@@ -78,7 +78,7 @@ commands:
     steps:
       - checkout
       - kubernetes/install:
-          kubectl_version: v1.15.2
+          kubectl_version: "v1.15.2"
           kops_version: 1.12.2
           max_time: true
       - run:

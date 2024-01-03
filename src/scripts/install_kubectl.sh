@@ -6,6 +6,14 @@ if [ "$KUBECTL_VERSION" == "latest" ]; then
     KUBECTL_VERSION=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)
 fi
 
+if [[ "$KUBECTL_VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  echo "Valid version format."
+else
+  echo "Invalid version format: ${KUBECTL_VERSION}" 
+  echo "Please use the format vX.Y.Z (e.g., v1.29.0)."
+  exit 1
+fi
+
 PLATFORM="linux"
 if uname | grep "Darwin"; then
     PLATFORM="darwin"
