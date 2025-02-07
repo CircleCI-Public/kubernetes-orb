@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  orb-tools: circleci/orb-tools@12.0
+  orb-tools: circleci/orb-tools@12.3
   kubernetes: {}
 filters: &filters
   tags:
@@ -19,22 +19,22 @@ executors:
 
   minikube:
     machine:
-      image: ubuntu-2004:202107-02
+      image: ubuntu-2204:2024.11.1
     environment:
       CHANGE_MINIKUBE_NONE_USER=true
 
   arm:
     machine:
-      image: ubuntu-2204:2022.07.1
+      image: ubuntu-2204:2024.11.1
     resource_class: arm.medium
 
   machine:
     machine:
-      image: ubuntu-2204:2022.07.1
+      image: ubuntu-2204:2024.11.1
 
   macos:
     macos:
-      xcode: 14.2.0
+      xcode: 15.3.0
 
 commands:
   start-minikube:
@@ -141,15 +141,18 @@ jobs:
           resource_file_path: "tests/nginx-deployment/deployment.yaml"
           resource_name: "deployment/nginx-deployment"
           get_rollout_status: true
+          watch_timeout: 2m
           show_kubectl_command: true
           envsubst: true
       - kubernetes/update_container_image:
           resource_name: "deployment/nginx-deployment"
-          container_image_updates: "nginx=nginx:1.9.1 redis=redis:5-buster"
+          container_image_updates: "nginx=nginx:1.27-alpine-slim redis=redis:5-buster"
           show_kubectl_command: true
+          watch_timeout: 2m
       - kubernetes/get_rollout_status:
           resource_file_path: "tests/nginx-deployment/deployment.yaml"
           watch_rollout_status: true
+          watch_timeout: 2m
       - kubernetes/rollback:
           resource_name: "deployment/nginx-deployment"
           get_rollout_status: true
@@ -163,6 +166,7 @@ jobs:
           resource_name: "deployment/staging-hello"
           kustomize: true
           get_rollout_status: true
+          watch_timeout: 2m
           show_kubectl_command: true
       - kubernetes/delete_resource:
           resource_file_path: "tests/kustomize/overlays/staging"
