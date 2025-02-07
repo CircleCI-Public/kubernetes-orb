@@ -3,7 +3,7 @@ KUBECTL_VERSION=$(eval echo "$K8_STR_KUBECTL_VERSION")
 MAX_TIME=$(eval echo "$K8_BOOL_MAX_TIME")
 if [ "$KUBECTL_VERSION" == "latest" ]; then
     # get latest kubectl release
-    KUBECTL_VERSION=$(curl -s https://dl.k8s.io/release/stable.txt)
+    KUBECTL_VERSION=$(curl -sL https://dl.k8s.io/release/stable.txt)
 fi
 
 if [[ "$KUBECTL_VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
