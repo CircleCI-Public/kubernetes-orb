@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: nginx:1.27-alpine-slim
+        image: nginx:1.26-alpine-slim
         ports:
         - containerPort: 80
       # For multi-image update testing purposes

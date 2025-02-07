@@ -146,7 +146,7 @@ jobs:
           envsubst: true
       - kubernetes/update_container_image:
           resource_name: "deployment/nginx-deployment"
-          container_image_updates: "nginx=nginx:1.9.1 redis=redis:5-buster"
+          container_image_updates: "nginx=nginx:1.27-alpine-slim redis=redis:5-buster"
           show_kubectl_command: true
           watch_timeout: 2m
       - kubernetes/get_rollout_status:
