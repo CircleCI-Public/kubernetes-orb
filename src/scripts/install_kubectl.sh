@@ -3,7 +3,7 @@ KUBECTL_VERSION=$(eval echo "$K8_STR_KUBECTL_VERSION")
 MAX_TIME=$(eval echo "$K8_BOOL_MAX_TIME")
 if [ "$KUBECTL_VERSION" == "latest" ]; then
     # get latest kubectl release
-    KUBECTL_VERSION=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)
+    KUBECTL_VERSION=$(curl -s https://dl.k8s.io/release/stable.txt)
 fi
 
 if [[ "$KUBECTL_VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
@@ -26,9 +26,9 @@ fi
 
 # download kubectl
 if [ "$MAX_TIME" == "1" ]; then
-    curl --max-time 300 -LO https://storage.googleapis.com/kubernetes-release/release/"${KUBECTL_VERSION}"/bin/"${PLATFORM}"/"${ARCH}"/kubectl
+    curl --max-time 300 -LO https://dl.k8s.io/release/"${KUBECTL_VERSION}"/bin/"${PLATFORM}"/"${ARCH}"/kubectl
 else 
-    curl -LO https://storage.googleapis.com/kubernetes-release/release/"${KUBECTL_VERSION}"/bin/"${PLATFORM}"/"${ARCH}"/kubectl
+    curl -LO https://dl.k8s.io/release/"${KUBECTL_VERSION}"/bin/"${PLATFORM}"/"${ARCH}"/kubectl
 fi
 
 [ -w /usr/local/bin ] && SUDO="" || SUDO=sudo
