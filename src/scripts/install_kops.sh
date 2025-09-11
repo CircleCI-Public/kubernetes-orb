@@ -2,7 +2,7 @@
 KOPS_VERSION=$(eval echo "$K8_STR_KOPS_VERSION")
 if [[ "$KOPS_VERSION" == "latest" ]]; then
     # get latest kops release
-    KOPS_VERSION=$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)
+    KOPS_VERSION=$(curl --fail --retry 3 -Ls -o /dev/null -w '%{url_effective}' "https://github.com/kubernetes/kops/releases/latest" | sed 's:.*/::')
 fi
 
 PLATFORM="linux"
